@@ -22,17 +22,19 @@ def load_yahoo_data():
 
 def query_qdrant_for_trends():
     try:
-        client = QdrantClient(url=os.getenv("QDRANT_URL", "http://localhost:6333"))
-        collection_name = "ROCKETRIDE" 
+        import chromadb
+        print("Querying Chroma on port 8330...")
+        client = chromadb.HttpClient(host='localhost', port=8330)
+        col = client.get_collection('ROCKETRIDE')
+        results = col.get(limit=50)
         
-        records, _ = client.scroll(
-            collection_name=collection_name,
-            limit=50,
-            with_payload=True
-        )
-        return [record.payload for record in records]
+        documents = results.get("documents", [])
+        print(f"Found {len(documents)} documents in Chroma.")
+        
+        # Wrap the strings in a dict with 'text' so the rest of the code works
+        return [{"text": doc} for doc in documents]
     except Exception as e:
-        print(f"Error querying Qdrant: {e}")
+        print(f"Error querying Chroma: {e}")
         return []
 
 def synthesize_brief(reddit_data, general_yahoo_data):

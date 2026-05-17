@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 async def fetch_and_process_reddit():
-    print("Starting Reddit Agent (Dropper Mode)...")
+    print("Starting Reddit Agent (WebHook Mode)...")
     limit = 20 # Limit to 20 posts for this prototype
     
     output_dir = "incoming_data"
@@ -56,12 +56,37 @@ async def fetch_and_process_reddit():
         except Exception as e:
             print(f"Error fetching data from r/{sub_name}: {e}")
             
-    # Save as a single combined text file in the dropper directory
+    # Save as a single combined text file (good for backup)
     file_path = os.path.join(output_dir, "reddit_data.txt")
     with open(file_path, "w") as f:
         f.write(combined_text)
         
-    print(f"Successfully dropped combined file at {file_path}")
+    print(f"Saved local backup at {file_path}")
+    
+    # Push to RocketRide Webhook
+    webhook_url = os.getenv("ROCKETRIDE_WEBHOOK_URL")
+    public_key = os.getenv("ROCKETRIDE_APIKEY")
+    private_token = os.getenv("ROCKETRIDE_PRIVATE_TOKEN")
+    
+    if webhook_url:
+        print(f"Pushing data to RocketRide Webhook: {webhook_url}")
+        try:
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {public_key}"
+            }
+            # Private token goes in ?auth= query param, public key in Authorization header
+            auth_url = f"{webhook_url}?auth={private_token}"
+            
+            json_payload = {"event": "test", "message": combined_text}
+            response = requests.post(auth_url, json=json_payload, headers=headers)
+            print(f"Webhook response status: {response.status_code}")
+            if response.status_code != 200:
+                print(f"Webhook response body: {response.text[:200]}")
+        except Exception as e:
+            print(f"Error pushing to webhook: {e}")
+    else:
+        print("No ROCKETRIDE_WEBHOOK_URL found in .env")
 
 if __name__ == "__main__":
     asyncio.run(fetch_and_process_reddit())

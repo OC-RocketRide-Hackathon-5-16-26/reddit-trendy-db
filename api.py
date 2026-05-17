@@ -53,6 +53,23 @@ async def get_yahoo_data():
         
     return {"data": data}
 
+@app.post("/api/webhook/report")
+async def receive_report(data: dict):
+    """Receives the report from RocketRide and saves it to a file"""
+    print("Received report from RocketRide!")
+    
+    # Extract the answers field
+    answers = data.get("answers", "")
+    if not answers:
+        # Fallback if the whole payload is the answer or structured differently
+        answers = json.dumps(data, indent=2)
+        
+    os.makedirs("reports", exist_ok=True)
+    with open("reports/daily_brief.md", "w", encoding="utf-8") as f:
+        f.write(answers)
+        
+    return {"status": "success"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)

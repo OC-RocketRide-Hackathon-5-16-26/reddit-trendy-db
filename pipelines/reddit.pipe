@@ -11,22 +11,16 @@
       },
       "ui": {
         "position": {
-          "x": 628.1608540383271,
-          "y": 507.8330456879081
+          "x": 416.1928542464256,
+          "y": 665.4218204023059
         },
         "measured": {
           "width": 150,
-          "height": 125
+          "height": 104
         },
         "nodeType": "default",
         "formDataValid": true
-      },
-      "input": [
-        {
-          "lane": "text",
-          "from": "parse_1"
-        }
-      ]
+      }
     },
     {
       "id": "llm_gemini_1",
@@ -34,26 +28,26 @@
       "config": {
         "profile": "gemini-2_5-flash",
         "1-pro-preview": {
-          "apikey": "YOUR_API_KEY"
+          "apikey": "AIzaSyAcIpvTUgO-SON58_o5Rgk8hLjR05DAEbs"
         },
         "parameters": {
           "google": {}
         },
         "5-flash-lite": {
-          "apikey": "YOUR_API_KEY"
+          "apikey": "AIzaSyBuvUfoCEDmdsBAFWg7kwPlowm_-6Pwxb4"
         },
         "5-flash": {
-          "apikey": "YOUR_API_KEY"
+          "apikey": "AIzaSyBuvUfoCEDmdsBAFWg7kwPlowm_-6Pwxb4"
         }
       },
       "ui": {
         "position": {
-          "x": 633.3304316928957,
-          "y": 645.9937725934755
+          "x": 401.38639003578896,
+          "y": 815.6514059347683
         },
         "measured": {
           "width": 150,
-          "height": 88
+          "height": 66
         },
         "nodeType": "default",
         "formDataValid": true
@@ -73,12 +67,12 @@
       },
       "ui": {
         "position": {
-          "x": 819.3709475158096,
-          "y": 498.67278231041007
+          "x": 817.1513873085646,
+          "y": 409.8903740206084
         },
         "measured": {
           "width": 150,
-          "height": 105
+          "height": 84
         },
         "nodeType": "default",
         "formDataValid": true
@@ -86,7 +80,7 @@
       "input": [
         {
           "lane": "documents",
-          "from": "preprocessor_llm_1"
+          "from": "preprocessor_langchain_1"
         }
       ]
     },
@@ -95,7 +89,7 @@
       "provider": "prompt",
       "config": {
         "instructions": [
-          "Consolidate a Confidence Score for each mentioned Hot Stock from Reddit"
+          "Consolidate a Confidence Score for each mentioned Hot Stock from Reddit. Then provide an explanation based on the results of the reddit posts. Don't hallucinate answers."
         ],
         "parameters": {
           "google": {}
@@ -103,8 +97,8 @@
       },
       "ui": {
         "position": {
-          "x": 844.3981818353866,
-          "y": 633.2881117862377
+          "x": 726.7614908513995,
+          "y": 644.3859128224628
         },
         "measured": {
           "width": 150,
@@ -122,8 +116,8 @@
       },
       "ui": {
         "position": {
-          "x": 1205.2307072601247,
-          "y": 503.415427141882
+          "x": 1351.7216809382976,
+          "y": 508.96432765999475
         },
         "measured": {
           "width": 150,
@@ -135,31 +129,9 @@
       "input": [
         {
           "lane": "answers",
-          "from": "chroma_1"
+          "from": "llm_gemini_2"
         }
       ]
-    },
-    {
-      "id": "dropper_1",
-      "provider": "dropper",
-      "config": {
-        "hideForm": true,
-        "mode": "Source",
-        "parameters": {},
-        "type": "dropper"
-      },
-      "ui": {
-        "position": {
-          "x": 267.49691934777985,
-          "y": 517.3289993389245
-        },
-        "measured": {
-          "width": 150,
-          "height": 101
-        },
-        "nodeType": "default",
-        "formDataValid": true
-      }
     },
     {
       "id": "parse_1",
@@ -167,12 +139,12 @@
       "config": {},
       "ui": {
         "position": {
-          "x": 430.4510727193155,
-          "y": 495.1666877479672
+          "x": 411.93081101408984,
+          "y": 487.9643637514906
         },
         "measured": {
           "width": 150,
-          "height": 158
+          "height": 136
         },
         "nodeType": "default",
         "formDataValid": true
@@ -180,7 +152,7 @@
       "input": [
         {
           "lane": "tags",
-          "from": "dropper_1"
+          "from": "webhook_1"
         }
       ]
     },
@@ -204,8 +176,8 @@
       },
       "ui": {
         "position": {
-          "x": 1009.6634113871414,
-          "y": 489.40709207179157
+          "x": 1011.8829715943866,
+          "y": 413.94204502546023
         },
         "measured": {
           "width": 150,
@@ -224,15 +196,104 @@
           "from": "prompt_1"
         }
       ]
+    },
+    {
+      "id": "preprocessor_langchain_1",
+      "provider": "preprocessor_langchain",
+      "config": {
+        "profile": "default",
+        "default": {
+          "mode": "strlen",
+          "splitter": "RecursiveCharacterTextSplitter"
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 624.2016756487078,
+          "y": 407.7924188601523
+        },
+        "measured": {
+          "width": 150,
+          "height": 84
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "text",
+          "from": "parse_1"
+        }
+      ]
+    },
+    {
+      "id": "llm_gemini_2",
+      "provider": "llm_gemini",
+      "config": {
+        "profile": "gemini-2_5-flash",
+        "1-pro-preview": {
+          "apikey": "•••••••••••••••••••••••••••••••••••wxb4"
+        },
+        "parameters": {
+          "google": {}
+        },
+        "5-flash": {
+          "apikey": "•••••••••••••••••••••••••••••••••••wxb4"
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 1182.099769533272,
+          "y": 507.0638323310799
+        },
+        "measured": {
+          "width": 150,
+          "height": 66
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "questions",
+          "from": "chroma_1"
+        },
+        {
+          "lane": "questions",
+          "from": "prompt_1"
+        }
+      ]
+    },
+    {
+      "id": "webhook_1",
+      "provider": "webhook",
+      "config": {
+        "hideForm": true,
+        "mode": "Source",
+        "parameters": {},
+        "type": "webhook"
+      },
+      "ui": {
+        "position": {
+          "x": 21.622671537053122,
+          "y": 511.10978010362254
+        },
+        "measured": {
+          "width": 150,
+          "height": 177
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      }
     }
   ],
   "project_id": "f8620b24-04ef-4b8e-8ecc-13080682dc3d",
   "viewport": {
-    "x": -448.3565606586893,
-    "y": -143.62035539629153,
-    "zoom": 0.8788727229330443
+    "x": 74.34489917413907,
+    "y": -213.29902728387628,
+    "zoom": 0.8229589767743416
   },
   "version": 1,
-  "docRevision": 136,
-  "source": "dropper_1"
+  "docRevision": 244,
+  "source": "webhook_1"
 }
