@@ -42,14 +42,14 @@ function App() {
       <header className="header">
         <h1 className="title">
           <Activity size={32} style={{ display: 'inline', marginRight: '10px', color: '#8a2be2' }} />
-          Trendy Stocks Terminal
+          Reddit Trendy DB
         </h1>
         <PipelineTrigger onTriggerComplete={fetchData} />
       </header>
       
       <main className="main-content">
         <div className="glass-panel">
-          <h2 className="panel-title">AI Synthesized Brief</h2>
+          <h2 className="panel-title">Gemini Synthesized Brief</h2>
           <ReportViewer content={report} loading={loading} />
         </div>
         

@@ -1,7 +1,6 @@
 import os
 import json
 import google.generativeai as genai
-from qdrant_client import QdrantClient
 from dotenv import load_dotenv
 
 # Import the new dynamic fetch function from our yahoo agent
@@ -20,7 +19,7 @@ def load_yahoo_data():
         print(f"No Yahoo data found: {e}")
         return []
 
-def query_qdrant_for_trends():
+def query_chroma_for_trends():
     try:
         import chromadb
         print("Querying Chroma on port 8330...")
@@ -36,6 +35,59 @@ def query_qdrant_for_trends():
     except Exception as e:
         print(f"Error querying Chroma: {e}")
         return []
+
+def verify_quotes(report_content, raw_documents):
+    """
+    Verifies that quotes in Section 3 exist in the raw documents.
+    If not, removes them.
+    """
+    print("Verifying quotes against raw data...")
+    lines = report_content.split('\n')
+    new_lines = []
+    in_quotes_section = False
+    
+    # Extract raw text for easy substring matching
+    raw_texts = []
+    for doc in raw_documents:
+        if isinstance(doc, dict):
+            text = doc.get('text', '')
+            title = doc.get('title', '')
+            raw_texts.append((title + " " + text).strip())
+        elif isinstance(doc, str):
+            raw_texts.append(doc.strip())
+
+    for line in lines:
+        if "Section 3: Representative Quotes" in line or "## Representative Quotes" in line:
+            in_quotes_section = True
+            new_lines.append(line)
+            continue
+            
+        if in_quotes_section and line.strip().startswith("-"):
+            # This is likely a quote line
+            import re
+            # Try to find text between quotes first
+            match = re.search(r'"([^"]*)"', line)
+            if match:
+                quote_text = match.group(1)
+            else:
+                quote_text = line.strip().lstrip("-").strip().strip('"').strip("'")
+            
+            # Check if it exists in any raw text
+            found = False
+            for raw in raw_texts:
+                if quote_text in raw:
+                    found = True
+                    break
+            
+            if found:
+                new_lines.append(line)
+            else:
+                print(f"Removing hallucinated quote: {quote_text}")
+                # We skip adding it to new_lines
+        else:
+            new_lines.append(line)
+            
+    return '\n'.join(new_lines)
 
 def synthesize_brief(reddit_data, general_yahoo_data):
     print("Synthesizing daily brief with Gemini...")
@@ -78,7 +130,7 @@ def synthesize_brief(reddit_data, general_yahoo_data):
     current_date = datetime.now().strftime("%B %d, %Y")
     
     prompt = f"""
-    You are a highly analytical financial AI. Generate a Daily Brief markdown document for today, {current_date}, based on the following three data sources:
+    You are a highly analytical financial AI. Generate a Daily Brief markdown document for today, {current_date}, based on the following data sources:
     
     1. **Raw Reddit Posts Data** (Contains titles, text, and engagement like upvotes/comments):
     {reddit_summary}
@@ -86,25 +138,40 @@ def synthesize_brief(reddit_data, general_yahoo_data):
     2. **Real-time Financials for the Reddit Stocks** (Actual market performance of the stocks being hyped):
     {reddit_financials_summary}
     
-    3. **General Yahoo Finance Trending Data** (For a broader market comparison):
-    {general_yahoo_summary}
+    Please synthesize a daily brief that contains ONLY the following information, separated into these sections: **Trending**, **Angry**, and **Representative Quotes**.
     
-    Please synthesize a daily brief that MUST include:
-    - **A Header**: "Daily Brief - {current_date}"
-    - **Reddit Trending Stocks Table**: A clean markdown table. You must consolidate a **Confidence Score** (0-10) for each mentioned Hot Stock from Reddit based on the frequency of mentions and engagement. Include the ticker, your calculated Confidence Score, determined Sentiment, and the actual market performance (price, change %) from Data Source 2.
-    - **Explanation based on Reddit Results**: Provide a detailed explanation for each stock based on the results of the reddit posts (why people are talking about it, what the consensus is).
-    - **General Market Trends Table (On the Side)**: A separate markdown table showing the general Yahoo trending stocks from Data Source 3.
-    - **Analysis & Insights**: Compare the Reddit buzz against the actual market movements. Is the hype justified?
-    - **Top Representative Quotes**: Extract compelling text directly from the Reddit posts.
+    **Section 1: Trending**
+    - Focus on the **Top 3 Trending Stocks** on Reddit.
+    - Ranked from highest confidence (out of 5) to 3rd highest confidence.
+    
+    **Section 2: Angry**
+    - Focus on the **Bottom 3 "Trending Stocks"** (worst sentiment or lowest confidence among those mentioned).
+    - Ranked from 3rd worst to absolute worst confidence.
+    
+    For each of these 6 stocks, provide:
+    - Ticker and Company Name.
+    - Confidence Score (on a scale of 0 to 5).
+    - Explanation based on the results of the Reddit posts (why people are talking about it, what the consensus is).
+    - **Actual Market Performance**: Price and change % (You MUST use the values from Data Source 2. Do NOT hallucinate these values!).
+    
+    **Section 3: Representative Quotes**
+    - Extract a maximum of 10 compelling, direct quotes from the Reddit posts related to the stocks above or general market sentiment.
+    - **Format**: Include the author in the format: `- u/author: "Quote text"`. If you cannot find the author's name in the text, use `- u/anonymous: "Quote text"`.
+    - **CRITICAL**: These quotes MUST be exact matches from the 'Raw Reddit Posts Data' provided. Do NOT paraphrase, summarize, or create quotes.
     
     CRITICAL INSTRUCTIONS:
+    - Do NOT include anything else! No general market tables, no separate analysis sections. Just these 3 sections.
     - Do NOT hallucinate answers! Rely ONLY on the provided data sources. If data is missing or insufficient, state it clearly.
-    - Format the output as a clean, highly aesthetic Markdown document. Use emojis and bold text for emphasis.
+    - Format the output as a clean, highly aesthetic Markdown document.
+    - Do NOT use emojis anywhere in the document.
+    - Avoid em-dashes (—). Use commas or parentheses instead.
+    - Maintain professional, human-like prose throughout.
     """
     
     try:
         response = model.generate_content(prompt)
         content = response.text
+        content = verify_quotes(content, reddit_data)
     except Exception as e:
         print(f"Error synthesizing brief: {e}")
         content = f"""# ⚠️ AI Synthesis Failed
@@ -130,7 +197,7 @@ The Gemini API key threw an error (`{e}`). However, here is the raw data that *w
 
 if __name__ == "__main__":
     y_data = load_yahoo_data()
-    r_data = query_qdrant_for_trends()
+    r_data = query_chroma_for_trends()
     
     if not r_data:
         print("Injecting mock raw Reddit data for synthesis demonstration...")

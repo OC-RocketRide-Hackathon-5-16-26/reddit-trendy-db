@@ -3,12 +3,28 @@ import time
 import os
 from agents.reddit_agent import fetch_and_process_reddit
 from agents.yahoo_agent import fetch_yahoo_trending
-from agents.synthesis_agent import synthesize_brief, load_yahoo_data, query_qdrant_for_trends
+from agents.synthesis_agent import synthesize_brief, load_yahoo_data, query_chroma_for_trends
 
 async def run_ingestion():
     print("=== Phase 1: Ingestion ===")
+    
+    # Clear Chroma collection to avoid stale data
+    try:
+        import chromadb
+        print("Clearing stale data from Chroma...")
+        client = chromadb.HttpClient(host='localhost', port=8330)
+        col = client.get_collection('ROCKETRIDE')
+        results = col.get()
+        ids = results.get('ids', [])
+        if ids:
+            col.delete(ids=ids)
+            print(f"Cleared {len(ids)} stale documents from Chroma.")
+        else:
+            print("Chroma was already empty.")
+    except Exception as e:
+        print(f"Notice: Could not clear Chroma (it might be empty or not created yet): {e}")
+
     # Run Reddit ingestion and Yahoo fetch concurrently
-    # The Reddit agent will push to the RocketRide webhook
     await asyncio.gather(
         fetch_and_process_reddit(),
         asyncio.to_thread(fetch_yahoo_trending)
@@ -17,15 +33,15 @@ async def run_ingestion():
 
 def run_synthesis():
     print("=== Phase 2: Synthesis ===")
-    # Give the RocketRide pipeline a moment to process embeddings into Qdrant
+    # Give the RocketRide pipeline a moment to process embeddings into Chroma
     print("Waiting for RocketRide pipeline to process embeddings...")
     time.sleep(5) 
     
     y_data = load_yahoo_data()
-    r_data = query_qdrant_for_trends()
+    r_data = query_chroma_for_trends()
     
     if not r_data:
-        print("Qdrant is empty. Fetching live Reddit data directly for synthesis...")
+        print("Chroma is empty. Fetching live Reddit data directly for synthesis...")
         import requests
         r_data = []
         headers = {'User-Agent': 'python:trendy_stocks_bot:v1.0'}

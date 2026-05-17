@@ -44,9 +44,11 @@ async def fetch_and_process_reddit():
                 selftext = post.get('selftext', '')
                 upvotes = post.get('score', 0)
                 num_comments = post.get('num_comments', 0)
+                author = post.get('author', 'anonymous')
                 
                 combined_text += f"=== POST START ===\n"
                 combined_text += f"Subreddit: r/{sub_name}\n"
+                combined_text += f"Author: u/{author}\n"
                 combined_text += f"Title: {title}\n"
                 combined_text += f"Upvotes: {upvotes}\n"
                 combined_text += f"Comments: {num_comments}\n"
@@ -81,8 +83,8 @@ async def fetch_and_process_reddit():
                 file_input = await page.query_selector("input[type='file']")
                 if file_input:
                     await file_input.set_input_files(abs_file_path)
-                    print("File uploaded. Keeping browser open for 5 minutes to allow pipeline to process...")
-                    await page.wait_for_timeout(300000)  # 5 minutes
+                    print("File uploaded. Keeping browser open for 10 seconds to allow pipeline to process...")
+                    await page.wait_for_timeout(10000)  # 10 seconds
                     print("Dropper upload complete via file input.")
                 else:
                     # Try drag-and-drop simulation on the drop zone
