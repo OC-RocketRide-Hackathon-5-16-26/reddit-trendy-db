@@ -1,121 +1,171 @@
-# Daily Brief - May 16, 2026 🗓️
+# Daily Brief - May 17, 2026 🗓️
 
-Good morning, investors! The markets are navigating a complex landscape today, marked by geopolitical tensions, shifting Fed expectations, and a continued focus on the booming AI sector, albeit with growing caution. Reddit's trading communities are abuzz with discussions ranging from semiconductor labor disputes to the implications of potential mega-IPOs.
+## 📈 Reddit Trending Stocks (Hype vs. Reality)
 
----
+Here's a look at the stocks generating the most discussion and engagement on Reddit, alongside their actual market performance.
 
-### Reddit Trending Stocks Overview 📈
+| Ticker | Hype Score (0-10) | Sentiment | Price | Change % |
+| :----- | :---------------: | :-------- | :---- | :------- |
+| NVDA | 10.0 | Negative 📉 | $225.32 | -4.42% |
+| MSFT | 7.9 | Positive 📈 | $421.92 | 3.05% |
+| AMD | 7.8 | Negative 📉 | $424.10 | -5.69% |
+| MU | 7.4 | Negative 📉 | $724.66 | -6.62% |
+| RKLB | 7.2 | Positive 📈 | $124.77 | -5.87% |
+| GOOG | 7.0 | Positive 📈 | $393.32 | -0.97% |
+| GOOGL | 6.7 | Positive 📈 | $396.78 | -1.07% |
+| INTC | 6.2 | Negative 📉 | $108.77 | -6.18% |
+| CBRS | 6.0 | Negative 📉 | $279.96 | -10.00% |
+| AAPL | 5.3 | Neutral ↔️ | $300.23 | 0.68% |
+| TSLA | 5.0 | Neutral ↔️ | $422.24 | -4.75% |
+| DRAM | 4.8 | Negative 📉 | $51.10 | -5.00% |
+| GLD | 4.7 | Neutral ↔️ | $417.29 | -2.32% |
+| APO | 4.6 | Neutral ↔️ | $135.38 | -0.10% |
+| SPY | 4.4 | Negative 📉 | $739.17 | -1.20% |
+| QCOM | 4.2 | Neutral ↔️ | $201.49 | 0.70% |
+| VTI | 4.2 | Positive 📈 | $362.74 | -1.27% |
+| GE | 4.0 | Neutral ↔️ | $281.53 | -3.43% |
+| META | 3.9 | Neutral ↔️ | $614.23 | -0.68% |
+| IONQ | 3.7 | Positive 📈 | $51.95 | -9.61% |
+| TSM | 3.7 | Positive 📈 | $404.35 | -3.20% |
+| OKLO | 3.7 | Positive 📈 | $62.25 | -7.38% |
+| SYM | 3.7 | Positive 📈 | $47.32 | -5.64% |
+| BA | 3.4 | Neutral ↔️ | $220.49 | -3.80% |
+| GEHC | 3.4 | Neutral ↔️ | $60.76 | -3.05% |
+| GS | 3.4 | Neutral ↔️ | $948.47 | -2.11% |
+| BX | 3.4 | Negative 📉 | $117.89 | -3.73% |
+| COHR | 3.4 | Neutral ↔️ | $382.45 | -5.55% |
+| BLK | 3.4 | Negative 📉 | $1081.90 | -2.00% |
+| ILMN | 3.4 | Neutral ↔️ | $142.54 | -0.49% |
+| MA | 3.4 | Neutral ↔️ | $494.20 | 0.87% |
+| V | 3.4 | Neutral ↔️ | $325.75 | 1.00% |
+| C | 3.4 | Neutral ↔️ | $123.42 | -1.12% |
+| GEAero | 3.4 | Neutral ↔️ | N/A | N/A |
+| TTWO | 3.3 | Positive 📈 | $242.44 | 0.01% |
+| POET | 3.3 | Positive 📈 | $15.97 | -22.36% |
+| SLV | 3.1 | Negative 📉 | N/A | N/A |
+| ASTS | 3.1 | Neutral ↔️ | $83.67 | 0.80% |
+| IAU | 3.1 | Neutral ↔️ | $85.51 | -2.32% |
+| SNOW | 2.8 | Neutral ↔️ | $157.47 | 4.45% |
+| COIN | 2.8 | Neutral ↔️ | $195.43 | -7.82% |
+| GEV | 2.7 | Neutral ↔️ | $1049.23 | -3.79% |
+| PL | 2.7 | Neutral ↔️ | $41.62 | -3.30% |
+| SWPPX | 2.2 | Neutral ↔️ | $19.06 | -1.19% |
+| SWISX | 2.2 | Neutral ↔️ | $30.48 | -1.65% |
 
-A snapshot of stocks creating buzz on Reddit, compared with their real-time market performance:
+## 📊 General Market Trends (Yahoo Finance)
 
-| Ticker      | Hype Score (0-10) | Sentiment      | Price     | Change %    |
-| :---------- | :---------------- | :------------- | :-------- | :---------- |
-| NVDA        | 10.0              | Mixed ⚖️       | $225.32   | -4.42%      |
-| AMD         | 9.9               | Mixed ⚖️       | $424.10   | -5.69%      |
-| SPY         | 9.5               | Negative 📉    | $739.17   | -1.20%      |
-| MU          | 9.4               | Mixed ⚖️       | $724.66   | -6.62%      |
-| INTC        | 9.2               | Negative 📉    | $108.77   | -6.18%      |
-| GOOGL       | 9.0               | Mixed ⚖️       | $396.78   | -1.07%      |
-| MSFT        | 8.9               | Mixed ⚖️       | $421.92   | 3.05%       |
-| SPCE (IPO)  | 7.6               | Positive 🚀    | N/A       | N/A         |
-| CBRS        | 7.4               | Negative 📉    | $279.96   | -10.00%     |
-| TSLA        | 7.3               | Negative 📉    | $422.24   | -4.75%      |
-| RKLB        | 7.2               | Positive ⬆️    | $124.77   | -5.87%      |
-| AAPL        | 7.2               | Negative 📉    | $300.23   | 0.68%       |
-| META        | 7.0               | Positive ⬆️    | $614.23   | -0.68%      |
-| TSM         | 6.9               | Positive ⬆️    | $404.35   | -3.20%      |
-| QCOM        | 6.6               | Neutral ⚪     | $201.49   | 0.70%       |
-| AMZN        | 6.4               | Positive ⬆️    | $264.14   | -1.15%      |
-| SOFI        | 6.1               | Mixed ⚖️       | $15.61    | -2.56%      |
-| GLD         | 6.0               | Mixed ⚖️       | $417.29   | -2.32%      |
-| IAU         | 6.0               | Mixed ⚖️       | $85.51    | -2.32%      |
-| SLV         | 5.8               | Negative 📉    | $69.04    | -8.57%      |
-| AVGO        | 5.8               | Positive ⬆️    | $425.19   | -3.32%      |
-| GE          | 5.6               | Neutral ⚪     | $281.53   | -3.43%      |
-| APO         | 5.5               | Mixed ⚖️       | $135.38   | -0.10%      |
-| NBIS        | 5.5               | Positive ⬆️    | $219.94   | -0.55%      |
-| VTI         | 5.2               | Mixed ⚖️       | $362.74   | -1.27%      |
-| POET        | 4.9               | Negative 📉    | $15.97    | -22.36%     |
-| VRT         | 4.9               | Positive ⬆️    | $370.94   | -1.41%      |
-| OKLO        | 4.8               | Positive ⬆️    | $62.25    | -7.38%      |
-| SYM         | 4.8               | Positive ⬆️    | $47.32    | -5.64%      |
-| IONQ        | 4.8               | Positive ⬆️    | $51.95    | -9.61%      |
-| BX          | 4.3               | Mixed ⚖️       | $117.89   | -3.73%      |
-| C           | 4.3               | Neutral ⚪     | $123.42   | -1.12%      |
-| MA          | 4.3               | Neutral ⚪     | $494.20   | 0.87%       |
-| V           | 4.3               | Neutral ⚪     | $325.75    | 1.00%       |
-| BA          | 4.3               | Neutral ⚪     | $220.49   | -3.80%      |
-| COHR        | 4.3               | Neutral ⚪     | $382.45   | -5.55%      |
-| BLK         | 4.3               | Mixed ⚖️       | $1081.90  | -2.00%      |
-| ILMN        | 4.3               | Neutral ⚪     | $142.54   | -0.49%      |
-| GEV         | 4.2               | Neutral ⚪     | $1049.23  | -3.79%      |
-| GEHC        | 4.2               | Neutral ⚪     | $60.76    | -3.05%      |
-| TTWO        | 4.1               | Neutral ⚪     | $242.44   | 0.01%       |
-| GS          | 4.1               | Neutral ⚪     | $948.47   | -2.11%      |
+A snapshot of top trending stocks and indices from broader financial news.
 
-*(Note: "SPCE (IPO)" refers to SpaceX, which is highly discussed for its upcoming IPO but does not yet have public market data.)*
-
----
-
-### General Market Trends 📊
-
-Trending tickers from broader financial news sources:
-
-| Ticker | Price      | Change % | Volume      |
-| :----- | :--------- | :------- | :---------- |
-| NVDA   | $225.32    | -4.42%   | 179,993,300 |
-| SPY    | $739.17    | -1.20%   | 60,290,000  |
-| AAPL   | $300.23    | 0.68%    | 54,721,100  |
-| TSLA   | $422.24    | -4.75%   | 52,271,800  |
-| QQQ    | $708.93    | -1.51%   | 51,687,900  |
-| MSFT   | $421.92    | 3.05%    | 50,310,800  |
-| AMZN   | $264.14    | -1.15%   | 40,672,200  |
-| AMD    | $424.10    | -5.69%   | 28,991,500  |
-| GOOGL  | $396.78    | -1.07%   | 20,205,600  |
-| META   | $614.23    | -0.68%   | 13,208,700  |
+| Ticker | Price | Change % |
+| :----- | :---- | :------- |
+| MSFT | $421.92 | 3.05% |
+| AAPL | $300.23 | 0.68% |
+| META | $614.23 | -0.68% |
+| GOOGL | $396.78 | -1.07% |
+| AMZN | $264.14 | -1.15% |
+| SPY | $739.17 | -1.20% |
+| QQQ | $708.93 | -1.51% |
+| NVDA | $225.32 | -4.42% |
+| TSLA | $422.24 | -4.75% |
+| AMD | $424.10 | -5.69% |
 
 ---
 
-### Analysis & Insights 🧠
+## 💡 Analysis & Insights
 
-Today's Reddit sentiment paints a clear picture of a market grappling with contradictory forces. High-flying AI stocks like **NVDA**, **AMD**, and **MU**, despite persistent underlying bullishness and previous "stealing the show" performance, faced significant drops (-4.42%, -5.69%, -6.62% respectively). This aligns with the "Trump left Beijing with no deal" news, which explicitly cited these tech giants being "punished immediately." The broader market, represented by **SPY** and **QQQ**, also saw declines (-1.20% and -1.51%), mirroring concerns over market breadth and potential Fed rate hikes.
+### Reddit Buzz vs. Market Performance:
+**Hype Justified (Positive Sentiment & Performance):**
+*   🟢 **MSFT**: Positive sentiment matched by actual market gain of 3.05%.
+*   🟢 **V**: Positive sentiment matched by actual market gain of 1.00%.
+*   🟢 **MA**: Positive sentiment, but stock up by 0.87%.
+*   🟢 **AAPL**: Neutral sentiment, but stock up by 0.68%.
 
-A notable divergence is seen in **MSFT**, which, despite mixed sentiment on Reddit regarding elite investor rebalancing and AI capital rotation, actually posted a strong gain of +3.05%. This could be attributed to a positive outlook surrounding its potential benefits from "GTA 6" exclusivity and its overall robust position in the tech ecosystem, perhaps seen as a safer AI play compared to pure-play chipmakers.
+**Concerns Confirmed (Negative Sentiment & Performance):**
+*   🔴 **NVDA**: Negative sentiment matched by actual market drop of -4.42%.
+*   🔴 **AMD**: Negative sentiment matched by actual market drop of -5.69%.
+*   🔴 **MU**: Negative sentiment matched by actual market drop of -6.62%.
+*   🔴 **INTC**: Negative sentiment matched by actual market drop of -6.18%.
+*   🔴 **CBRS**: Negative sentiment matched by actual market drop of -10.00%.
+*   🔴 **DRAM**: Negative sentiment matched by actual market drop of -5.00%.
+*   🔴 **BX**: Negative sentiment matched by actual market drop of -3.73%.
+*   🔴 **BLK**: Negative sentiment matched by actual market drop of -2.00%.
+*   🔴 **POET**: Positive sentiment, but stock down by -22.36%.
+*   🔴 **IONQ**: Positive sentiment, but stock down by -9.61%.
+*   🔴 **RKLB**: Positive sentiment, but stock down by -5.87%.
+*   🔴 **SYM**: Positive sentiment, but stock down by -5.64%.
+*   🔴 **OKLO**: Positive sentiment, but stock down by -7.38%.
 
-The Reddit community expressed strong **negative sentiment** about the market's current state, particularly regarding the Federal Reserve's stance on interest rates following an "inflation surge." The discussion around the S&P hitting 7,500 while "nearly half the index is below its 50-day moving average" underscores a pervasive unease about market concentration and sustainability. The sharp **-10.00% drop** of recent IPO **CBRS** further fueled concerns, with discussions hinting at potential capital rotation away from existing AI names into new IPOs.
+**Mixed Signals (Divergent Sentiment/Performance):**
+*   🟡 **GOOG**: Positive sentiment, but stock down by -0.97%.
+*   🟡 **GOOGL**: Positive sentiment, but stock down by -1.07%.
+*   🟡 **TSM**: Positive sentiment, but stock down by -3.20%.
+*   🟡 **VTI**: Positive sentiment, but stock down by -1.27%.
+*   🟡 **SPY**: Negative sentiment, but stock down by -1.20%. (Sentiment here refers to discussions about macro market concerns)
+*   🟡 **GE**: Neutral sentiment, but stock down by -3.43%.
+*   🟡 **GEHC**: Neutral sentiment, but stock down by -3.05%.
+*   🟡 **GS**: Neutral sentiment, but stock down by -2.11%.
+*   🟡 **COHR**: Neutral sentiment, but stock down by -5.55%.
+*   🟡 **BA**: Neutral sentiment, but stock down by -3.80%.
+*   🟡 **ILMN**: Neutral sentiment, but stock down by -0.49%.
+*   🟡 **C**: Neutral sentiment, but stock down by -1.12%.
+*   🟡 **PL**: Neutral sentiment, but stock down by -3.30%.
+*   🟡 **GEV**: Neutral sentiment, but stock down by -3.79%.
+*   🟡 **GLD**: Neutral sentiment, but stock down by -2.32%.
+*   🟡 **IAU**: Neutral sentiment, but stock down by -2.32%.
+*   🟡 **SWPPX**: Neutral sentiment, but stock down by -1.19%.
+*   🟡 **SWISX**: Neutral sentiment, but stock down by -1.65%.
+*   ⚪ **APO**: Neutral sentiment and relatively flat performance (-0.10%).
+*   ⚪ **ASTS**: Neutral sentiment and relatively flat performance (0.80%).
+*   ⚪ **TTWO**: Positive sentiment and relatively flat performance (0.01%).
+*   ⚪ **QCOM**: Neutral sentiment and relatively flat performance (0.70%).
+*   ⚪ **SNOW**: Neutral sentiment, but stock up by 4.45%.
+*   ⚪ **COIN**: Neutral sentiment, but stock down by -7.82%.
+*   ⚪ **META**: Neutral sentiment, but stock down by -0.68%.
 
-In the commodity space, **GLD** and **IAU** (Gold ETFs) saw mixed sentiment as investors debated adding more on a dip versus trimming after significant prior gains, ultimately seeing a slight decline today. The **SLV** (-8.57%) drop after a call option recommendation highlights the volatility and risk appetite prevalent among retail traders.
+### Overall Market Context:
+The broader market, as indicated by **SPY (-1.20%)** and **QQQ (-1.51%)**, saw a downturn following concerns over a potential Fed rate hike and the lack of concrete trade deals from Trump's China visit.
+A significant concern raised on Reddit is the **narrow market breadth**, with the S&P 500 hitting new highs while nearly half its components are below their 50-day moving average. This suggests a rally driven by a few mega-cap names, making investors uneasy about sustainability.
+Traders are reportedly shifting to price in a **Fed rate hike** following inflation data, a stark reversal from recent 'rate cuts soon' narratives, adding macro uncertainty.
+The market reacted negatively to **Trump's return from Beijing without a trade deal**, particularly punishing tech and semiconductor stocks like INTC, AMD, MU, and NVDA.
+The looming **Samsung union strike** (affecting memory chip production) is a major talking point. While some speculate it could benefit competitors like Micron (MU), Micron itself saw a drop, suggesting broader market anxieties or ETF-related selling.
 
-Despite the broader market nervousness, specific narratives generated **positive sentiment**. **SpaceX (SPCE)**, though not publicly traded, garnered significant hype with news of a 5-for-1 stock split ahead of its anticipated IPO. **RKLB** also maintained a positive outlook among investors who see it as a long-term fundamental holding in the burgeoning space economy. The discussion around **APO** revealed a bullish "value proposition" despite "Epstein overhang" and broader private credit sector challenges, resulting in a nearly flat day. The strong gains reported in the "Portfolio advice" thread for names like **NBIS**, **TSM**, **VRT**, **AVGO**, **AMZN**, and **META** show that specific AI infrastructure plays continue to deliver for long-term holders, even as the broader market experiences jitters.
+### Key Sector & IPO Watch:
+The **AI sector** remains a dominant theme, with discussions around 'the next big thing' after current leaders like NVIDIA and IONQ. New components like memory, storage, and photonics are highlighted as critical infrastructure.
+The impending **SpaceX IPO** (following a 5-for-1 stock split) is generating immense interest, though some investors are wary of high valuations and whether to 'buy Day 1' or wait for stabilization. Other major AI IPOs like OpenAI and Anthropic are also anticipated, raising questions about capital rotation.
+There are signs of **retail investor euphoria**, with observations like 'Uber Driver Indicator Has Been Replaced' by a waiter asking about stocks, and a new AI-focused ETF (DRAM) drawing significant retail attention. This sometimes signals a market top to seasoned investors.
 
 ---
 
-### What's Angry 😠 vs Exciting 🤩
+## 🔥 What's Angry vs. Exciting on Reddit
 
-**Angry:**
-*   **Fed Rate Hike Fears:** Traders are suddenly pricing in a possible rate hike after an inflation surge, a sharp flip from the "rate cuts soon" narrative.
-*   **Market Breadth Concerns:** The S&P 500 hit 7,500, but nearly half the index is trading below its 50-day moving average, signaling a market carried by a few mega-caps.
-*   **Geopolitical Impact:** Trump's lack of a trade deal with China immediately "punished tech," leading to significant drops in **INTC**, **AMD**, **MU**, and **NVDA**.
-*   **Samsung Labor Tensions:** The ongoing dispute and potential 18-day general strike at Samsung Electronics raises concerns about global memory chip supply, though talks are set to resume.
-*   **IPO Volatility:** **CBRS** dropped 10% on its second day, following its IPO, adding to caution around new, richly-valued AI names.
-*   **Private Credit Headwinds:** Concerns over "cracks" in technology credits affect firms like Blackstone and BlackRock, though **APO** is seen by some as an exception.
-*   **Retail Euphoria Indicators:** Mentions of "Uber Driver Indicator" and "Retail Euphoria Turns Six-Week Fund Into Record-Busting AI Trade" posts on WSB suggest anxieties about a potential market top.
+### Angry Topics 😡
+*   Widespread drops in tech and semiconductor stocks (e.g., INTC, AMD, MU, NVDA) following Trump's China trip without a trade deal. 📉
+*   Concerns over a potential Fed rate hike due to inflation data, a sharp reversal from 'rate cuts soon' narratives. ⚠️
+*   Intensifying labor tensions and the looming general strike at Samsung Electronics, potentially impacting global memory chip supply and competitor MU's short-term performance. 😠
+*   Unease about narrow market breadth, with the S&P 500 at record highs driven by a few mega-caps while most stocks underperform, raising bubble concerns. 😟
+*   Persistent concerns regarding Apollo's ($APO) private credit divergence and the 'Epstein overhang' potentially affecting institutional fundraising. 🏛️
+*   Signs of retail investor euphoria (e.g., 'waiter indicator') and a new AI ETF (DRAM) attracting significant attention, which some investors see as a contrarian indicator of a market top. 🛑
+*   Recent IPO Cerebras ($CBRS) dropped 10% on its second day, following a classic pattern of initial hype fading quickly. 📉
 
-**Exciting:**
-*   **AI Infrastructure Gains:** Investors are seeing substantial returns from long-term holdings in AI infrastructure, including **NBIS**, **MU**, **VRT**, **GOOGL**, **AVGO**, **RKLB**, **TSM**, **AMZN**, and **META**.
-*   **Next Big Sectors:** Speculation is high for emerging sectors like Synthetic Biology, Neuromorphic computing, Advanced materials, Spatial computing/Extended Reality, and EVTOL.
-*   **SpaceX IPO Anticipation:** Shareholders approved a 5-for-1 stock split ahead of a highly anticipated SpaceX IPO, sparking enthusiasm for the commercial space economy.
-*   **GTA 6 Platform Benefits:** **Microsoft** (and Sony) are expected to significantly benefit from GTA 6 exclusivity, earning 30% of sales without development costs.
-*   **Micron's Competitive Edge:** The potential Samsung strike could benefit **MU** by reducing competition and allowing for premium pricing in the memory chip market.
-*   **Apollo's Value Proposition:** Despite market concerns, **APO** is highlighted for its attractive valuation (15x earnings) and unique business model utilizing sticky insurance float for private credit.
+### Exciting Topics ✨
+*   Continued strong performance in major tech stocks (e.g., AMD, TSM, VTI), leading investors to ponder deeper capital deployment. 🚀
+*   Enthusiasm for emerging 'next big sectors' like Synthetic Biology, Neuromorphic Computing, Advanced Materials, Spatial Computing/XR, and EVTOL, with specific stock recommendations sought. 💡
+*   High anticipation for the **SpaceX IPO** following a 5-for-1 stock split, with discussions on long-term investment opportunities in the space sector. 🌌
+*   Positive outlook on **Rocket Lab ($RKLB)** as a 'winner' in the commercial space economy, praised for its leadership and end-to-end capabilities, seen as a bargain compared to SpaceX's valuation. 🌠
+*   Bullish sentiment on **Sony** and **Microsoft ($MSFT)** benefiting significantly from GTA 6 exclusivity, expecting huge increases in console sales and active users without development costs. 🎮
+*   Reports of recent gains in **POET**, with some regret from early sellers. ⬆️
+*   Berkshire Hathaway tripling its position in **Alphabet ($GOOG)**, signaling strong institutional confidence despite some elite investors rebalancing. 💰
+*   Microsoft's ($MSFT) strong rebound (up ~18% from March lows) after Bill Ackman's Q1 purchase. 💹
 
 ---
 
-### Top Representative Quotes 🗣️
+## 💬 Top Representative Quotes
 
-*   `"At what point do we admit that macro traders are just playing a news ticker and not actual data?"` - r/stocks user questioning the market's reaction to Trump's China trip.
-*   `"The index is at an all-time high, but nearly half the stocks in it are in short-term downtrends. What that means: the record is being carried by a handful of mega-cap names."` - r/stocks on concerns about S&P 500 market breadth.
-*   `"Every time a random person with no market background starts asking about stocks, my recession indicator goes off. Top confirmed."` - r/wallstreetbets 'Uber Driver Indicator' post on market euphoria.
-*   `"SpaceX shareholders approve 5-for-1 stock split ahead of IPO, reports Bloomberg"` - r/wallstreetbets post, highlighting significant pre-IPO activity.
-*   `"Traders are suddenly pricing in a possible rate hike at the next Fed meeting after the inflation print, which is a pretty sharp flip from the \u201crate cuts soon\u201d narrative just a short time ago."` - r/stocks reflecting anxiety about Fed policy.
-*   `"Consequently, I believe Apollo has a very attractive value proposition at current levels. The retail fund drama is nothing but noise..."` - r/stocks user arguing for **APO**'s underlying strength.
+*   *Angry 😠* "Samsung Electronics has proposed performance bonuses of 607% of annual salary for its memory chip division, compared to just 50-100% for its foundry and System LSI units, reflecting a stark profit divide that has intensified labor tensions."
+*   *Angry 😠* "Trump flew home from Beijing. No trade framework. No Taiwan agreement. His words: "fantastic conversations." $INTC dropped 6%. $AMD lost 5.7%. $MU fell 6.6%. $NVDA shed 4.4%."
+*   *Angry 😠* "Traders are suddenly pricing in a possible rate hike at the next Fed meeting after the inflation print, which is a pretty sharp flip from the “rate cuts soon” narrative."
+*   *Angry 😟* "The index is at an all-time high, but nearly half the stocks in it are in short-term downtrends. The record is being carried by a handful of mega-cap names."
+*   *Exciting ✨* "The last 5 years or so have been dominated by 5 sectors: AI, Space, Robotics, Nuclear, Quantum... I think it’s time to look into new sectors to find the next BIG names."
+*   *Exciting 🚀* "SpaceX shareholders approve 5-for-1 stock split ahead of IPO, reports Bloomberg"
+*   *Exciting/Intriguing 💰* "In Q1, Berkshire tripled their $GOOG position while Bill Ackman sold 95% to buy $MSFT despite being “very” bullish on GOOG long term. Why?"
+*   *Angry 🛑* "Every time a random person with no market background starts asking about stocks, my recession indicator goes off. Top confirmed."

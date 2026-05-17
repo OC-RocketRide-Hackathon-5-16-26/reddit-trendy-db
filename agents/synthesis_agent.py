@@ -91,13 +91,15 @@ def synthesize_brief(reddit_data, general_yahoo_data):
     
     Please synthesize a daily brief that MUST include:
     - **A Header**: "Daily Brief - {current_date}"
-    - **Reddit Trending Stocks Table**: A clean markdown table. You must calculate a "Hype Score" (0-10) for each stock based on the frequency of mentions in the Reddit data and the upvotes/comments. Include the ticker, your calculated Hype Score, determined Sentiment, and the actual market performance (price, change %) from Data Source 2.
+    - **Reddit Trending Stocks Table**: A clean markdown table. You must consolidate a **Confidence Score** (0-10) for each mentioned Hot Stock from Reddit based on the frequency of mentions and engagement. Include the ticker, your calculated Confidence Score, determined Sentiment, and the actual market performance (price, change %) from Data Source 2.
+    - **Explanation based on Reddit Results**: Provide a detailed explanation for each stock based on the results of the reddit posts (why people are talking about it, what the consensus is).
     - **General Market Trends Table (On the Side)**: A separate markdown table showing the general Yahoo trending stocks from Data Source 3.
     - **Analysis & Insights**: Compare the Reddit buzz against the actual market movements. Is the hype justified?
-    - **What's Angry vs Exciting**: Highlight negative sentiment vs positive sentiment based on the posts.
     - **Top Representative Quotes**: Extract compelling text directly from the Reddit posts.
     
-    Format the output as a clean, highly aesthetic Markdown document. Use emojis and bold text for emphasis.
+    CRITICAL INSTRUCTIONS:
+    - Do NOT hallucinate answers! Rely ONLY on the provided data sources. If data is missing or insufficient, state it clearly.
+    - Format the output as a clean, highly aesthetic Markdown document. Use emojis and bold text for emphasis.
     """
     
     try:

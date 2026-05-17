@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 async def fetch_and_process_reddit():
-    print("Starting Reddit Agent (WebHook Mode)...")
+    print("Starting Reddit Agent (Dropper Mode)...")
     limit = 20 # Limit to 20 posts for this prototype
     
     output_dir = "incoming_data"
@@ -63,30 +63,44 @@ async def fetch_and_process_reddit():
         
     print(f"Saved local backup at {file_path}")
     
-    # Push to RocketRide Webhook
-    webhook_url = os.getenv("ROCKETRIDE_WEBHOOK_URL")
-    public_key = os.getenv("ROCKETRIDE_APIKEY")
-    private_token = os.getenv("ROCKETRIDE_PRIVATE_TOKEN")
+    # Upload the text file to the RocketRide Dropper via headless browser (Playwright)
+    dropper_url = os.getenv("ROCKETRIDE_DROPPER_URL")
+    dropper_key = os.getenv("ROCKETRIDE_DROPPER_KEY")
     
-    if webhook_url:
-        print(f"Pushing data to RocketRide Webhook: {webhook_url}")
+    if dropper_url and dropper_key:
+        abs_file_path = os.path.abspath(file_path)
+        auth_url = f"{dropper_url}?auth={dropper_key}"
+        print(f"Uploading to RocketRide Dropper via browser: {auth_url}")
         try:
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {public_key}"
-            }
-            # Private token goes in ?auth= query param, public key in Authorization header
-            auth_url = f"{webhook_url}?auth={private_token}"
-            
-            json_payload = {"event": "test", "message": combined_text}
-            response = requests.post(auth_url, json=json_payload, headers=headers)
-            print(f"Webhook response status: {response.status_code}")
-            if response.status_code != 200:
-                print(f"Webhook response body: {response.text[:200]}")
+            from playwright.async_api import async_playwright
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                await page.goto(auth_url, wait_until="networkidle")
+                # Find the file input in the dropper UI and upload the file
+                file_input = await page.query_selector("input[type='file']")
+                if file_input:
+                    await file_input.set_input_files(abs_file_path)
+                    print("File uploaded. Keeping browser open for 5 minutes to allow pipeline to process...")
+                    await page.wait_for_timeout(300000)  # 5 minutes
+                    print("Dropper upload complete via file input.")
+                else:
+                    # Try drag-and-drop simulation on the drop zone
+                    await page.evaluate(f"""
+                        const dt = new DataTransfer();
+                        const file = new File([`placeholder`], 'reddit_data.txt', {{type: 'text/plain'}});
+                        dt.items.add(file);
+                        document.querySelector('[class*="drop"]')?.dispatchEvent(
+                            new DragEvent('drop', {{dataTransfer: dt, bubbles: true}})
+                        );
+                    """)
+                    await page.wait_for_timeout(3000)
+                    print("Dropper upload attempted via drag-and-drop simulation.")
+                await browser.close()
         except Exception as e:
-            print(f"Error pushing to webhook: {e}")
+            print(f"Error uploading to dropper via Playwright: {e}")
     else:
-        print("No ROCKETRIDE_WEBHOOK_URL found in .env")
+        print("No ROCKETRIDE_DROPPER_URL or ROCKETRIDE_DROPPER_KEY found in .env")
 
 if __name__ == "__main__":
     asyncio.run(fetch_and_process_reddit())
