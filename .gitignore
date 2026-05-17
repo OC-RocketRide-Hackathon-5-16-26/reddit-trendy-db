@@ -1,0 +1,26 @@
+# RocketRide
+.rocketride/
+pipelines/*.pipe.bak
+
+# Environment Variables
+.env
+.env.local
+
+# Data
+chroma_data/
+incoming_data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+
+# OS files
+.DS_Store

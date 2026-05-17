@@ -1,0 +1,62 @@
+[
+    {
+        "symbol": "NVDA",
+        "price": 225.32000732421875,
+        "change_percent": -4.420122985552178,
+        "volume": 179993300
+    },
+    {
+        "symbol": "SPY",
+        "price": 739.1699829101562,
+        "change_percent": -1.2029351892724574,
+        "volume": 60290000
+    },
+    {
+        "symbol": "AAPL",
+        "price": 300.2300109863281,
+        "change_percent": 0.6773815730967192,
+        "volume": 54721100
+    },
+    {
+        "symbol": "TSLA",
+        "price": 422.239990234375,
+        "change_percent": -4.750732717914996,
+        "volume": 52271800
+    },
+    {
+        "symbol": "QQQ",
+        "price": 708.9299926757812,
+        "change_percent": -1.508771403198107,
+        "volume": 51687900
+    },
+    {
+        "symbol": "MSFT",
+        "price": 421.9200134277344,
+        "change_percent": 3.050587640227838,
+        "volume": 50310800
+    },
+    {
+        "symbol": "AMZN",
+        "price": 264.1400146484375,
+        "change_percent": -1.1526033074604298,
+        "volume": 40672200
+    },
+    {
+        "symbol": "AMD",
+        "price": 424.1000061035156,
+        "change_percent": -5.69268521427791,
+        "volume": 28991500
+    },
+    {
+        "symbol": "GOOGL",
+        "price": 396.7799987792969,
+        "change_percent": -1.0696408274313813,
+        "volume": 20205600
+    },
+    {
+        "symbol": "META",
+        "price": 614.22998046875,
+        "change_percent": -0.679141092245368,
+        "volume": 13208700
+    }
+]

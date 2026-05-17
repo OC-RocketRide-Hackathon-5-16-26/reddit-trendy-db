@@ -1,0 +1,238 @@
+{
+  "components": [
+    {
+      "id": "preprocessor_llm_1",
+      "provider": "preprocessor_llm",
+      "config": {
+        "profile": "default",
+        "default": {
+          "numberOfTokens": 384
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 628.1608540383271,
+          "y": 507.8330456879081
+        },
+        "measured": {
+          "width": 150,
+          "height": 125
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "text",
+          "from": "parse_1"
+        }
+      ]
+    },
+    {
+      "id": "llm_gemini_1",
+      "provider": "llm_gemini",
+      "config": {
+        "profile": "gemini-2_5-flash",
+        "1-pro-preview": {
+          "apikey": "YOUR_API_KEY"
+        },
+        "parameters": {
+          "google": {}
+        },
+        "5-flash-lite": {
+          "apikey": "YOUR_API_KEY"
+        },
+        "5-flash": {
+          "apikey": "YOUR_API_KEY"
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 633.3304316928957,
+          "y": 645.9937725934755
+        },
+        "measured": {
+          "width": 150,
+          "height": 88
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "control": [
+        {
+          "classType": "llm",
+          "from": "preprocessor_llm_1"
+        }
+      ]
+    },
+    {
+      "id": "embedding_transformer_1",
+      "provider": "embedding_transformer",
+      "config": {
+        "profile": "miniLM"
+      },
+      "ui": {
+        "position": {
+          "x": 819.3709475158096,
+          "y": 498.67278231041007
+        },
+        "measured": {
+          "width": 150,
+          "height": 105
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "documents",
+          "from": "preprocessor_llm_1"
+        }
+      ]
+    },
+    {
+      "id": "prompt_1",
+      "provider": "prompt",
+      "config": {
+        "instructions": [
+          "Consolidate a Confidence Score for each mentioned Hot Stock from Reddit"
+        ],
+        "parameters": {
+          "google": {}
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 844.3981818353866,
+          "y": 633.2881117862377
+        },
+        "measured": {
+          "width": 150,
+          "height": 119
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      }
+    },
+    {
+      "id": "response_answers_1",
+      "provider": "response_answers",
+      "config": {
+        "laneName": "answers"
+      },
+      "ui": {
+        "position": {
+          "x": 1205.2307072601247,
+          "y": 503.415427141882
+        },
+        "measured": {
+          "width": 150,
+          "height": 66
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "answers",
+          "from": "chroma_1"
+        }
+      ]
+    },
+    {
+      "id": "dropper_1",
+      "provider": "dropper",
+      "config": {
+        "hideForm": true,
+        "mode": "Source",
+        "parameters": {},
+        "type": "dropper"
+      },
+      "ui": {
+        "position": {
+          "x": 267.49691934777985,
+          "y": 517.3289993389245
+        },
+        "measured": {
+          "width": 150,
+          "height": 101
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      }
+    },
+    {
+      "id": "parse_1",
+      "provider": "parse",
+      "config": {},
+      "ui": {
+        "position": {
+          "x": 430.4510727193155,
+          "y": 495.1666877479672
+        },
+        "measured": {
+          "width": 150,
+          "height": 158
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "tags",
+          "from": "dropper_1"
+        }
+      ]
+    },
+    {
+      "id": "chroma_1",
+      "provider": "chroma",
+      "config": {
+        "profile": "local",
+        "local": {
+          "collection": "ROCKETRIDE",
+          "host": "localhost",
+          "port": 8330
+        },
+        "cloud": {
+          "collection": "ROCKETRIDE",
+          "port": 443
+        },
+        "parameters": {
+          "google": {}
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 1009.6634113871414,
+          "y": 489.40709207179157
+        },
+        "measured": {
+          "width": 150,
+          "height": 101
+        },
+        "nodeType": "default",
+        "formDataValid": true
+      },
+      "input": [
+        {
+          "lane": "documents",
+          "from": "embedding_transformer_1"
+        },
+        {
+          "lane": "questions",
+          "from": "prompt_1"
+        }
+      ]
+    }
+  ],
+  "project_id": "f8620b24-04ef-4b8e-8ecc-13080682dc3d",
+  "viewport": {
+    "x": -448.3565606586893,
+    "y": -143.62035539629153,
+    "zoom": 0.8788727229330443
+  },
+  "version": 1,
+  "docRevision": 136,
+  "source": "dropper_1"
+}
