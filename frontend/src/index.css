@@ -1,3 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-scroll-vertical {
+    animation: scrollVertical 20s linear infinite;
+  }
+  .animate-scroll-horizontal {
+    animation: scrollHorizontal 15s linear infinite;
+  }
+}
+
+@keyframes scrollVertical {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-25%); }
+}
+
+@keyframes scrollHorizontal {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-25%); }
+}
+
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 :root {
   --bg-dark: #0a0a0f;
   --bg-panel: rgba(20, 20, 30, 0.6);
@@ -25,10 +60,38 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.main-left-column {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
+
+.carousel-container {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+.carousel-absolute-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+
+
+
 
 .header {
   display: flex;
@@ -168,23 +231,29 @@ body {
 .ticker-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .ticker-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background: rgba(0,0,0,0.2);
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.02);
-  transition: background 0.2s;
+  padding: 1.2rem;
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .ticker-item:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(30, 30, 45, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
+
 
 .ticker-symbol {
   font-weight: 700;

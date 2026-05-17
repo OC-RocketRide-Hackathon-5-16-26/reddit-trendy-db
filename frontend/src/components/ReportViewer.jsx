@@ -1,5 +1,38 @@
 import ReactMarkdown from 'react-markdown'
 import { FileText } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+
+function AnimatedSection({ children }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target); // Only animate once
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`section-fade-in ${isVisible ? 'is-visible' : ''}`}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function ReportViewer({ content, loading }) {
   if (loading) {
@@ -16,9 +49,25 @@ export default function ReportViewer({ content, loading }) {
     )
   }
 
+  // Split by "## " at the start of a line
+  const chunks = content.split(/^## /m);
+
   return (
     <div className="markdown-body">
-      <ReactMarkdown>{content}</ReactMarkdown>
+      {chunks.map((chunk, index) => {
+        if (!chunk.trim()) return null;
+        
+        // If it's the first chunk and doesn't look like it had a header,
+        // it might be the top title or intro.
+        const isFirst = index === 0;
+        const markdownContent = isFirst ? chunk : `## ${chunk}`;
+        
+        return (
+          <AnimatedSection key={index}>
+            <ReactMarkdown>{markdownContent}</ReactMarkdown>
+          </AnimatedSection>
+        )
+      })}
     </div>
   )
 }
