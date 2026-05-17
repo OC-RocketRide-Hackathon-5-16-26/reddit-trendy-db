@@ -9,15 +9,10 @@ export default function PipelineTrigger({ onTriggerStart, onTriggerComplete }) {
     if (onTriggerStart) onTriggerStart()
     try {
       const res = await fetch('http://localhost:8000/api/run', { method: 'POST' })
-      const data = await res.json()
+      await res.json()
       
-      // The python script takes roughly ~20-30 seconds to run completely.
-      // We'll wait 30 seconds before we automatically refetch the data
-      setTimeout(() => {
-        setRunning(false)
-        onTriggerComplete()
-      }, 30000)
-      
+      setRunning(false)
+      onTriggerComplete()
     } catch (error) {
       console.error("Failed to trigger pipeline", error)
       setRunning(false)
@@ -38,7 +33,7 @@ export default function PipelineTrigger({ onTriggerStart, onTriggerComplete }) {
       ) : (
         <>
           <Play size={18} fill="currentColor" />
-          Run Agents
+          Run Analysis
         </>
       )}
     </button>

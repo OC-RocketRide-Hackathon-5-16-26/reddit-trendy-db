@@ -21,15 +21,16 @@ class StatusResponse(BaseModel):
     message: str
 
 def run_pipeline():
-    """Runs the main.py pipeline in the background"""
+    """Runs the main.py pipeline and waits for completion"""
     print("API Triggered: Running the data pipeline...")
-    # Using subprocess to run the existing orchestration script
-    subprocess.Popen(["python3", "main.py"])
+    import subprocess
+    # Using run instead of Popen to block until completed
+    subprocess.run(["python3", "main.py"])
 
 @app.post("/api/run", response_model=StatusResponse)
-async def trigger_run(background_tasks: BackgroundTasks):
-    background_tasks.add_task(run_pipeline)
-    return {"status": "success", "message": "Pipeline triggered successfully. It will take a few moments to generate the brief."}
+def trigger_run():
+    run_pipeline()
+    return {"status": "success", "message": "Pipeline completed successfully."}
 
 @app.get("/api/report")
 async def get_report():

@@ -43,7 +43,7 @@ function App() {
         <header className="header">
           <h1 className="title">
             <Activity size={32} style={{ display: 'inline', marginRight: '10px', color: '#8a2be2' }} />
-            Reddit Trendy DB
+            Reddit Stock IQ
           </h1>
           <PipelineTrigger 
             onTriggerStart={() => setLoading(true)} 
@@ -52,7 +52,6 @@ function App() {
         </header>
         
         <div className="glass-panel">
-          <h2 className="panel-title">Gemini Synthesized Brief</h2>
           <ReportViewer content={report} loading={loading} />
         </div>
       </div>

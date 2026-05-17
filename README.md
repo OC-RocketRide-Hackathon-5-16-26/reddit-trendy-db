@@ -1,4 +1,4 @@
-# Reddit Trendy DB
+# Reddit Stock IQ
 
 A premium financial terminal that scrapes trending stocks from Reddit, enriches them with real-time Yahoo Finance data, and uses Gemini to synthesize a structured "Daily Brief" report.
 

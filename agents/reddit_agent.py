@@ -8,7 +8,7 @@ load_dotenv()
 
 async def fetch_and_process_reddit():
     print("Starting Reddit Agent (Dropper Mode)...")
-    limit = 20 # Limit to 20 posts for this prototype
+    limit = 100 # 100 posts for this prototype
     
     output_dir = "incoming_data"
     os.makedirs(output_dir, exist_ok=True)
