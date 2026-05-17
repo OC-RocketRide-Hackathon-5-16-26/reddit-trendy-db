@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reddit Stock IQ — Workflow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --emerald: #34d399;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --dark: #060810;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--dark);
+      color: #f0f4ff;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── atmosphere ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 0% 0%,   rgba(52,211,153,0.09), transparent),
+        radial-gradient(ellipse 50% 60% at 100% 100%, rgba(59,130,246,0.10), transparent),
+        radial-gradient(ellipse 40% 40% at 55% 50%, rgba(139,92,246,0.05), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── header ── */
+    .hdr {
+      position: relative; z-index: 1;
+      padding: 1.8rem 3.5rem 0;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+
+    .hdr h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem; font-weight: 800; letter-spacing: -0.5px;
+      background: linear-gradient(110deg, #fff 50%, var(--emerald));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .hdr .meta {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+    }
+
+    /* ── main canvas area ── */
+    .stage {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 0.5rem 2rem 1rem;
+    }
+
+    /* ── SVG connector lines ── */
+    .connector-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    /* ── Nodes ── */
+    .node {
+      position: absolute;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.5rem;
+      transform: translate(-50%, -50%);
+      cursor: default;
+    }
+
+    .node-ring {
+      position: relative;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      transition: transform 0.3s;
+    }
+
+    .node:hover .node-ring { transform: scale(1.12); }
+
+    .node-ring::before {
+      content: '';
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--ring-a), var(--ring-b), var(--ring-a));
+      animation: spin 4s linear infinite;
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    .node-ring::after {
+      content: '';
+      position: absolute; inset: 2px;
+      border-radius: 50%;
+      background: var(--dark);
+      z-index: -1;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .node-label {
+      text-align: center;
+      max-width: 100px;
+    }
+
+    .node-label .name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      color: #fff; line-height: 1.25;
+      display: block;
+    }
+
+    .node-label .tech {
+      font-size: 0.58rem; font-weight: 500;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.05em;
+    }
+
+    /* color variants */
+    .g { --ring-a: #34d399; --ring-b: #059669; }
+    .b { --ring-a: #3b82f6; --ring-b: #1d4ed8; }
+    .p { --ring-a: #8b5cf6; --ring-b: #5b21b6; }
+    .a { --ring-a: #f59e0b; --ring-b: #d97706; }
+    .r { --ring-a: #f43f5e; --ring-b: #be123c; }
+
+    /* inner circle bg tint */
+    .g .node-ring { background: rgba(52,211,153,0.12); }
+    .b .node-ring { background: rgba(59,130,246,0.12); }
+    .p .node-ring { background: rgba(139,92,246,0.12); }
+    .a .node-ring { background: rgba(245,158,11,0.12); }
+    .r .node-ring { background: rgba(244,63,94,0.12); }
+
+    /* ── Phase overlay panels ── */
+    .phase-overlay {
+      position: absolute;
+      top: 10%; bottom: 5%;
+      border-radius: 20px;
+      border: 1px solid;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Phase banners ── */
+    .phase-banner {
+      position: absolute;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid;
+      z-index: 1;
+    }
+
+    /* ── Animated particles on lines ── */
+    .particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      position: relative; z-index: 1;
+      padding: 0.5rem 3.5rem 1.2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .fpill {
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.2rem 0.6rem;
+      border-radius: 999px; border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.25);
+    }
+
+    .footer-tag {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      color: rgba(255,255,255,0.12); letter-spacing: 0.05em;
+    }
+
+    /* ── Nodes sit above overlays ── */
+    .node { z-index: 2; }
+
+    /* ── Tooltip on hover ── */
+    .tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(8,10,20,0.97);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 0.6rem 0.9rem;
+      width: 180px;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 200;
+      white-space: normal;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+
+    /* For nodes in the top half, show tooltip below instead */
+    .tooltip-below {
+      bottom: auto;
+      top: calc(100% + 10px);
+    }
+
+    .node:hover .tooltip { opacity: 1; }
+
+    /* ── Slide engine ── */
+    .deck {
+      position: relative;
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
+
+    .slide-page {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1), transform 0.55s cubic-bezier(0.4,0,0.2,1);
+      transform: translateX(60px);
+    }
+
+    .slide-page.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+
+    .slide-page.exit {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* ── Nav bar ── */
+    .nav-bar {
+      position: fixed;
+      bottom: 1.4rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 1.2rem;
+      z-index: 999;
+      background: rgba(8,10,20,0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 0.45rem 1rem;
+    }
+
+    .nav-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem; font-weight: 600;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+    .nav-btn:hover { color: #fff; }
+    .nav-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .nav-dots { display: flex; gap: 0.45rem; align-items: center; }
+    .nav-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer; transition: all 0.3s;
+    }
+    .nav-dot.active { background: var(--emerald); width: 18px; border-radius: 999px; }
+
+    .nav-count {
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ── Intro slide specific ── */
+    .intro-slide {
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      padding: 5rem 7rem;
+      position: relative;
+    }
+
+    .intro-eyebrow {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--emerald);
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.8rem;
+    }
+    .intro-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 30px; height: 2px;
+      background: var(--emerald);
+    }
+
+    .intro-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      margin-bottom: 1.8rem;
+      background: linear-gradient(120deg, #fff 30%, var(--emerald) 65%, var(--blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .intro-tagline {
+      font-size: 1.1rem; font-weight: 300;
+      color: rgba(255,255,255,0.45);
+      max-width: 540px; line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .intro-pills {
+      display: flex; flex-wrap: wrap; gap: 0.7rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .intro-pill {
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.75rem; font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.6);
+    }
+    .intro-pill.em { border-color: rgba(52,211,153,0.4); color: var(--emerald); background: rgba(52,211,153,0.06); }
+    .intro-pill.bl { border-color: rgba(59,130,246,0.4);  color: #93c5fd; background: rgba(59,130,246,0.06); }
+    .intro-pill.pu { border-color: rgba(139,92,246,0.4);  color: #c4b5fd; background: rgba(139,92,246,0.06); }
+
+    .intro-cta {
+      font-size: 0.75rem; font-weight: 500;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.08em;
+    }
+    .intro-cta span { color: var(--emerald); }
+
+    .intro-tools {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tools-label {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-right: 0.2rem;
+    }
+
+    .intro-by {
+      font-size: 0.8rem; font-weight: 500;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.08em;
+      margin-top: 0.6rem;
+    }
+
+    /* decorative large text watermark */
+    .intro-watermark {
+      position: absolute;
+      right: 5rem; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(8rem, 18vw, 16rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -8px;
+      background: linear-gradient(160deg, rgba(52,211,153,0.06), rgba(59,130,246,0.04));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ════════════════════════════════
+     SLIDE 1 — INTRO
+════════════════════════════════ -->
+<div class="slide-page active" id="slide-0">
+  <div class="intro-slide">
+    <div class="intro-eyebrow">OC Hackathon 2026 &nbsp;·&nbsp; AI + Finance</div>
+    <h1 class="intro-title">Reddit<br>Stock IQ</h1>
+    <p class="intro-tagline">
+      Retail investors talk on Reddit before markets move.<br>
+      We built a real-time AI pipeline that reads 200 hot posts,
+      extracts trending tickers, and delivers a structured market
+      brief &mdash; in one click.
+    </p>
+    <div class="intro-tools">
+      <span class="tools-label">Tools:</span>
+      <span class="intro-pill em">Gemini 3.1 Flash Lite</span>
+      <span class="intro-pill pu">ChromaDB &amp; RAG</span>
+      <span class="intro-pill bl">Yahoo Finance</span>
+      <span class="intro-pill">r/stocks &amp; r/wallstreetbets</span>
+      <span class="intro-pill">FastAPI &middot; React</span>
+      <span class="intro-pill">RocketRide</span>
+      <span class="intro-pill">Python 3 &middot; asyncio</span>
+    </div>
+    <p class="intro-cta">Press <span>→</span> to see the pipeline</p>
+    <p class="intro-by">By: Gene &amp; Hiram</p>
+    <div class="intro-watermark">IQ</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 2 — WORKFLOW DIAGRAM
+════════════════════════════════ -->
+<div class="slide-page" id="slide-1">
+
+<!-- Header -->
+<div class="hdr">
+  <h1>Pipeline Architecture</h1>
+  <span class="meta">End-to-End AI Workflow</span>
+</div>
+
+<!-- Stage -->
+<div class="stage" id="stage">
+
+  <!-- SVG Lines -->
+  <svg class="connector-svg" id="svg"></svg>
+
+  <!-- ─── NODES ─── -->
+
+  <!-- Row 1 sources -->
+  <div class="node g" id="n-reddit" style="left:12%; top:25%">
+    <div class="node-ring">📡<div class="tooltip tooltip-below">Fetches 100 hot posts each from r/stocks & r/wallstreetbets simultaneously using asyncio</div></div>
+    <div class="node-label"><span class="name">Reddit API</span><span class="tech">r/stocks · r/wsb</span></div>
+  </div>
+
+  <div class="node a" id="n-yahoo" style="left:12%; top:72%">
+    <div class="node-ring">💹<div class="tooltip">Fetches live price & 1-day % change for key tickers concurrently with Reddit ingestion</div></div>
+    <div class="node-label"><span class="name">Yahoo Finance</span><span class="tech">yfinance · Live</span></div>
+  </div>
+
+  <!-- Dropper -->
+  <div class="node p" id="n-dropper" style="left:30%; top:25%">
+    <div class="node-ring">🚀<div class="tooltip tooltip-below">Uploads the combined Reddit text file to the RocketRide pipeline for chunking & embedding</div></div>
+    <div class="node-label"><span class="name">RocketRide Dropper</span><span class="tech">Browser automation</span></div>
+  </div>
+
+  <!-- ChromaDB -->
+  <div class="node p" id="n-chroma" style="left:30%; top:72%">
+    <div class="node-ring">🗄️<div class="tooltip">Stores all post embeddings. Synthesis agent queries ChromaDB for semantically relevant context</div></div>
+    <div class="node-label"><span class="name">ChromaDB</span><span class="tech">Vector store · RAG</span></div>
+  </div>
+
+  <!-- Regex -->
+  <div class="node g" id="n-regex" style="left:50%; top:50%">
+    <div class="node-ring">🔍<div class="tooltip">Python regex scans 200 posts for ticker patterns. Ranks by mentions + cumulative upvotes. No AI call needed.</div></div>
+    <div class="node-label"><span class="name">Ticker Extraction</span><span class="tech">Regex · Top 5 rank</span></div>
+  </div>
+
+  <!-- Gemini -->
+  <div class="node p" id="n-gemini" style="left:58%; top:50%">
+    <div class="node-ring">🤖<div class="tooltip">Single Gemini 3.1 Flash Lite call synthesizes market overview, top 5 stocks with confidence scores, and 10 verified excerpts</div></div>
+    <div class="node-label"><span class="name">Gemini 3.1 Flash Lite</span><span class="tech">AI Synthesis</span></div>
+  </div>
+
+  <!-- Verify -->
+  <div class="node r" id="n-verify" style="left:82%; top:28%">
+    <div class="node-ring">✅<div class="tooltip tooltip-below">Fuzzy-matches every extracted quote back to raw Reddit posts. Hallucinated quotes are deleted automatically.</div></div>
+    <div class="node-label"><span class="name">Quote Verify</span><span class="tech">Anti-hallucination</span></div>
+  </div>
+
+  <!-- FastAPI -->
+  <div class="node b" id="n-api" style="left:82%; top:62%">
+    <div class="node-ring">⚡<div class="tooltip">FastAPI backend serves /api/run and /api/report. Blocks until the full pipeline completes before responding.</div></div>
+    <div class="node-label"><span class="name">FastAPI</span><span class="tech">/api/run · /api/report</span></div>
+  </div>
+
+  <!-- React -->
+  <div class="node b" id="n-react" style="left:94%; top:45%">
+    <div class="node-ring">📊<div class="tooltip">Premium React dashboard. Content blurs while the pipeline runs, then reveals the full brief with Buy/Hold/Sell signals.</div></div>
+    <div class="node-label"><span class="name">React UI</span><span class="tech">Live Dashboard</span></div>
+  </div>
+
+  <!-- Phase overlays (behind nodes) -->
+  <div class="phase-overlay" style="left:2%; width:38%; background:rgba(52,211,153,0.03); border-color:rgba(52,211,153,0.12);"></div>
+  <div class="phase-overlay" style="left:41%; width:26%; background:rgba(139,92,246,0.04); border-color:rgba(139,92,246,0.14);"></div>
+  <div class="phase-overlay" style="left:68%; width:30%; background:rgba(59,130,246,0.03); border-color:rgba(59,130,246,0.12);"></div>
+
+  <!-- Phase banners -->
+  <div class="phase-banner" style="left:12%; top:5%; transform:translateX(-50%); color:#34d399; border-color:rgba(52,211,153,0.3); background:rgba(52,211,153,0.08)">⬇ Ingest</div>
+  <div class="phase-banner" style="left:50%; top:5%; transform:translateX(-50%); color:#c4b5fd; border-color:rgba(139,92,246,0.3); background:rgba(139,92,246,0.08)">⚙ Process</div>
+  <div class="phase-banner" style="left:88%; top:5%; transform:translateX(-50%); color:#93c5fd; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.08)">✦ Output</div>
+
+</div>
+
+</div><!-- /slide-1 -->
+</div><!-- /deck -->
+
+<!-- Nav bar -->
+<nav class="nav-bar">
+  <button class="nav-btn" id="btn-prev">← Prev</button>
+  <div class="nav-dots">
+    <div class="nav-dot active" onclick="goTo(0)"></div>
+    <div class="nav-dot" onclick="goTo(1)"></div>
+  </div>
+  <span class="nav-count" id="nav-count">1 / 2</span>
+  <button class="nav-btn" id="btn-next">Next →</button>
+</nav>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide-page');
+  const dots   = document.querySelectorAll('.nav-dot');
+  const count  = document.getElementById('nav-count');
+  const btnP   = document.getElementById('btn-prev');
+  const btnN   = document.getElementById('btn-next');
+
+  function goTo(n) {
+    if (n === current) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    setTimeout(() => slides[current].classList.remove('exit'), 600);
+    dots[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    count.textContent = (current + 1) + ' / ' + slides.length;
+    btnP.disabled = current === 0;
+    btnN.disabled = current === slides.length - 1;
+    if (current === 1) setTimeout(draw, 80); // redraw SVG after slide transition
+  }
+
+  btnP.addEventListener('click', () => goTo(Math.max(0, current - 1)));
+  btnN.addEventListener('click', () => goTo(Math.min(slides.length - 1, current + 1)));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(Math.min(slides.length - 1, current + 1));
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(Math.max(0, current - 1));
+  });
+
+  btnP.disabled = true; // start on slide 0
+
+  // Draw animated SVG connector lines between nodes
+  const connections = [
+    { from: 'n-reddit',  to: 'n-dropper', color: '#34d399' },
+    { from: 'n-yahoo',   to: 'n-regex',   color: '#f59e0b' },
+    { from: 'n-dropper', to: 'n-chroma',  color: '#8b5cf6' },
+    { from: 'n-chroma',  to: 'n-regex',   color: '#8b5cf6' },
+    { from: 'n-reddit',  to: 'n-regex',   color: '#34d399', dashed: true },
+    { from: 'n-regex',   to: 'n-gemini',  color: '#34d399' },
+    { from: 'n-gemini',  to: 'n-verify',  color: '#8b5cf6' },
+    { from: 'n-gemini',  to: 'n-api',     color: '#3b82f6' },
+    { from: 'n-verify',  to: 'n-react',   color: '#f43f5e' },
+    { from: 'n-api',     to: 'n-react',   color: '#3b82f6' },
+  ];
+
+  function getCenter(id) {
+    const stage = document.getElementById('stage');
+    const el = document.getElementById(id);
+    const sr = stage.getBoundingClientRect();
+    const er = el.getBoundingClientRect();
+    return {
+      x: er.left + er.width / 2 - sr.left,
+      y: er.top  + er.height / 2 - sr.top
+    };
+  }
+
+  function draw() {
+    const svg = document.getElementById('svg');
+    svg.innerHTML = '';
+    const stage = document.getElementById('stage');
+    const W = stage.clientWidth, H = stage.clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+    connections.forEach(({ from, to, color, dashed }) => {
+      const a = getCenter(from), b = getCenter(to);
+      const cx = (a.x + b.x) / 2;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const d = `M ${a.x} ${a.y} Q ${cx} ${a.y} ${b.x} ${b.y}`;
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', color);
+      path.setAttribute('stroke-width', '1.5');
+      path.setAttribute('opacity', '0.3');
+      if (dashed) path.setAttribute('stroke-dasharray', '4 6');
+
+      const anim = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      anim.setAttribute('r', '3');
+      anim.setAttribute('fill', color);
+      anim.setAttribute('opacity', '0.85');
+      const motion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+      motion.setAttribute('dur', (1.5 + Math.random() * 2).toFixed(1) + 's');
+      motion.setAttribute('repeatCount', 'indefinite');
+      motion.setAttribute('begin', (Math.random() * 2).toFixed(1) + 's');
+      const mpath = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+      const pid = 'p-' + from + to;
+      path.setAttribute('id', pid);
+      mpath.setAttribute('href', '#' + pid);
+      motion.appendChild(mpath);
+      anim.appendChild(motion);
+
+      svg.appendChild(path);
+      svg.appendChild(anim);
+    });
+  }
+
+  document.querySelectorAll('.node-ring').forEach(ring => {
+    const n = ring.closest('.node');
+    const c = n.classList.contains('g') ? 'rgba(52,211,153,0.25)'
+            : n.classList.contains('b') ? 'rgba(59,130,246,0.25)'
+            : n.classList.contains('p') ? 'rgba(139,92,246,0.25)'
+            : n.classList.contains('a') ? 'rgba(245,158,11,0.25)'
+            : 'rgba(244,63,94,0.25)';
+    ring.style.boxShadow = `0 0 18px ${c}`;
+  });
+
+  window.addEventListener('resize', () => { if (current === 1) draw(); });
+  setTimeout(draw, 100);
+</script>
+</body>
+</html>
+
+
+

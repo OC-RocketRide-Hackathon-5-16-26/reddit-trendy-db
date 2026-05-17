@@ -147,35 +147,36 @@ def verify_quotes(report_content, raw_documents):
 def synthesize_brief(reddit_data, general_yahoo_data):
     print("Synthesizing daily brief with Gemini...")
     
-    # 1. Extract tickers and sentiment per post using Gemini
-    try:
-        extract_prompt = f"""
-        Analyze these raw Reddit posts. For each post:
-        1. Extract all stock ticker symbols mentioned.
-        2. Determine the overall sentiment of the post (POSITIVE or NEGATIVE).
+    # 1. Extract tickers using regex (MUCH FASTER than Gemini)
+    print("Extracting tickers using Python regex...")
+    import re
+    
+    post_sentiments = []
+    # Regex for tickers: All caps word of 1-5 letters
+    ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
+    
+    # Common false positives to filter out
+    common_words = {"A", "I", "DD", "CEO", "USA", "SEC", "FED", "FOMC", "API", "AI", "US", "UK", "EU", "THE", "AND", "FOR", "YOU", "ARE", "HAS", "BUT"}
+    
+    for i, post in enumerate(reddit_data):
+        title = post.get("title", "") or ""
+        text = post.get("text", "") or ""
+        combined = title + " " + text
         
-        Return ONLY a JSON list of objects, where each object corresponds to a post and has the format:
-        [
-          {{"post_index": 0, "tickers": ["AAPL", "NVDA"], "sentiment": "POSITIVE"}},
-          {{"post_index": 1, "tickers": ["TSLA"], "sentiment": "NEGATIVE"}}
-        ]
+        # Find all matches
+        matches = ticker_pattern.findall(combined)
         
-        The "post_index" should correspond to the index of the post in the input list.
-        Do not include any other text, just the raw JSON list.
-        
-        Posts:
-        {json.dumps([{"title": p.get("title"), "text": p.get("text")} for p in reddit_data])}
-        """
-        response = model.generate_content(extract_prompt)
-        text = response.text.strip()
-        if text.startswith('```json'):
-            text = text[7:-3]
-        elif text.startswith('```'):
-            text = text[3:-3]
-        post_sentiments = json.loads(text)
-    except Exception as e:
-        print(f"Error extracting symbols and sentiment: {e}")
-        post_sentiments = []
+        # Filter and clean
+        tickers = set()
+        for match in matches:
+            if match not in common_words and len(match) > 1: # Tickers are usually at least 2 letters, except some like 'T'
+                tickers.add(match)
+                
+        post_sentiments.append({
+            "post_index": i,
+            "tickers": list(tickers),
+            "sentiment": "NEUTRAL" # Default as we are not extracting it
+        })
 
     # 2. Count mentions and upvotes in a single bucket
     symbol_stats = {}
@@ -244,7 +245,7 @@ def synthesize_brief(reddit_data, general_yahoo_data):
     Please synthesize a daily brief using EXACTLY these pre-selected stocks. Do NOT swap, replace, or re-rank stocks.
     
     ## Overall Trending Market Analysis
-    - Provide a brief summary of the overall market sentiment and major themes discussed in the Reddit posts (1-2 paragraphs).
+    - Provide a brief summary of the overall market sentiment and major themes discussed in the Reddit posts. **Keep this section to no more than 100 words.**
     
     - Write entries for the stocks listed in Data Source 3, in the order provided.
     

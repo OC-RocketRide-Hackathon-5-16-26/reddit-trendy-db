@@ -211,11 +211,26 @@ body {
   line-height: 1.6;
 }
 
-.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+.markdown-body h1, .markdown-body h3 {
   color: #fff;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   padding-bottom: 0.5rem;
   margin-top: 2rem;
+}
+
+.markdown-body h2 {
+  background: linear-gradient(90deg, #34d399, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+  display: inline-block;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .markdown-body h1 {

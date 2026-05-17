@@ -22,22 +22,23 @@ async def fetch_and_process_reddit():
         "wallstreetbets": os.getenv("REDDIT_HOT_WSB")
     }
     
-    combined_text = ""
-    for sub_name, base_url in endpoints.items():
+    async def fetch_subreddit(sub_name, base_url):
         if not base_url:
             print(f"Skipping {sub_name}, URL not found in .env")
-            continue
+            return ""
             
         print(f"Fetching from r/{sub_name}...")
         url = f"{base_url}?limit={limit}"
         
         try:
-            response = requests.get(url, headers=headers)
+            # Run blocking requests.get in a separate thread
+            response = await asyncio.to_thread(requests.get, url, headers=headers)
             response.raise_for_status()
             data = response.json()
             
             posts = data.get('data', {}).get('children', [])
             
+            text = ""
             for post_obj in posts:
                 post = post_obj.get('data', {})
                 title = post.get('title', '')
@@ -46,17 +47,22 @@ async def fetch_and_process_reddit():
                 num_comments = post.get('num_comments', 0)
                 author = post.get('author', 'anonymous')
                 
-                combined_text += f"=== POST START ===\n"
-                combined_text += f"Subreddit: r/{sub_name}\n"
-                combined_text += f"Author: u/{author}\n"
-                combined_text += f"Title: {title}\n"
-                combined_text += f"Upvotes: {upvotes}\n"
-                combined_text += f"Comments: {num_comments}\n"
-                combined_text += f"Body:\n{selftext}\n"
-                combined_text += f"=== POST END ===\n\n"
-                    
+                text += f"=== POST START ===\n"
+                text += f"Subreddit: r/{sub_name}\n"
+                text += f"Author: u/{author}\n"
+                text += f"Title: {title}\n"
+                text += f"Upvotes: {upvotes}\n"
+                text += f"Comments: {num_comments}\n"
+                text += f"Body:\n{selftext}\n"
+                text += f"=== POST END ===\n\n"
+            return text
         except Exception as e:
             print(f"Error fetching data from r/{sub_name}: {e}")
+            return ""
+
+    tasks = [fetch_subreddit(name, url) for name, url in endpoints.items()]
+    results = await asyncio.gather(*tasks)
+    combined_text = "".join(results)
             
     # Save as a single combined text file (good for backup)
     file_path = os.path.join(output_dir, "reddit_data.txt")
