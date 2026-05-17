@@ -41,7 +41,7 @@ function App() {
     <div className="app-container">
       <header className="header">
         <h1 className="title">
-          <Activity size={32} style={{ display: 'inline', marginRight: '10px', color: '#8a2be2' }} />
+          <Activity size={32} style={{ display: 'inline', marginRight: '10px', color: 'var(--accent-color)' }} />
           Reddit Trendy DB
         </h1>
         <PipelineTrigger onTriggerComplete={fetchData} />
@@ -52,12 +52,12 @@ function App() {
           <h2 className="panel-title">Gemini Synthesized Brief</h2>
           <ReportViewer content={report} loading={loading} />
         </div>
-        
-        <div className="glass-panel">
-          <h2 className="panel-title">Market Overview</h2>
-          <YahooSidebar data={yahooData} loading={loading} />
-        </div>
       </main>
+
+      <div className="carousel-container">
+        <h2 className="panel-title">Market Overview</h2>
+        <YahooSidebar data={yahooData} loading={loading} />
+      </div>
     </div>
   )
 }

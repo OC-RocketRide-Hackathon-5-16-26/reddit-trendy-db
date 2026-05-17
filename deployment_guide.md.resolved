@@ -1,0 +1,167 @@
+# Docker & Google Cloud Deployment Guide
+
+This guide outlines how to package the Reddit Trendy DB application using Docker and deploy it to Google Cloud Platform (GCP) using a Compute Engine Virtual Machine.
+
+## 📁 Handling Local Files in Docker
+
+You asked: *When we dock this and deploy it, do these 'local root folders/files' stop being pointed to?*
+
+**Answer**: Yes and No. 
+In Docker, paths are relative to the **inside** of the container. However, we use **Docker Volumes** to map folders inside the container to folders on your real Google Cloud VM.
+
+Here is how we handle your specific files:
+*   `chroma_data/`: We map this to a folder on the VM so your database persists even if the container restarts.
+*   `data/yahoo_trending.json`: This will be generated inside the container's isolated file system (which is fine since it's temporary data).
+*   `incoming_data/reddit_data.txt`: This will also be generated inside the container and uploaded to Dropper.
+
+---
+
+## 🔑 Where to Store API Keys
+
+Never hardcode your API keys in the Docker image or commit them to GitHub!
+On Google Cloud, you have two options:
+
+1.  **The Easy Way (Best for this VM setup)**: Create a `.env` file directly on your Google Cloud VM. Docker Compose will read this file when starting the containers.
+2.  **The Enterprise Way**: Use **Google Secret Manager**. Your Python code would fetch the keys at runtime via the Google Cloud SDK.
+
+For this guide, we will use the **Easy Way (.env file on the VM)**.
+
+---
+
+## 🛠️ Step 1: Create the Dockerfiles
+
+You will need two Dockerfiles: one for the backend and one for the frontend.
+
+### Backend Dockerfile (`Dockerfile.backend`)
+Create this in the root directory:
+
+```dockerfile
+FROM mcr.microsoft.com/playwright/python:v1.43.0-jammy
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+RUN playwright install chromium
+
+# Copy application code
+COPY . .
+
+# Expose API port
+EXPOSE 8000
+
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### Frontend Dockerfile (`frontend/Dockerfile`)
+Create this in the `frontend/` directory:
+
+```dockerfile
+FROM node:20-slim
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Install a simple server to serve the static build
+RUN npm install -g serve
+EXPOSE 5173
+
+CMD ["serve", "-s", "dist", "-l", "5173"]
+```
+
+---
+
+## 🏗️ Step 2: Create the Docker Compose File
+
+Create `docker-compose.yml` in the root directory to link everything together:
+
+```yaml
+version: '3.8'
+
+services:
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - "8330:8000"
+    volumes:
+      - ./chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+    depends_on:
+      - chroma
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+```
+
+---
+
+## 🚀 Step 3: Google Cloud Deployment (Step-by-Step)
+
+### 1. Create the VM Instance
+Run this command in your local terminal (assuming `gcloud` is installed and authenticated):
+
+```bash
+gcloud compute instances create reddit-trendy-terminal \
+    --project=[YOUR_PROJECT_ID] \
+    --zone=us-central1-a \
+    --machine-type=e2-standard-2 \
+    --image-family=ubuntu-2204-lts \
+    --image-project=ubuntu-os-cloud \
+    --boot-disk-size=20GB \
+    --tags=http-server,https-server
+```
+
+### 2. Allow Firewall Traffic
+Allow traffic on your specific ports:
+
+```bash
+gcloud compute firewall-rules create allow-terminal-ports \
+    --allow tcp:8000,tcp:5173,tcp:8330 \
+    --description="Allow ports for Reddit Trendy DB" \
+    --target-tags=http-server
+```
+
+### 3. Connect to the VM
+```bash
+gcloud compute ssh reddit-trendy-terminal --zone=us-central1-a
+```
+
+### 4. Install Docker on the VM
+Once inside the VM, run:
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose
+```
+
+### 5. Clone and Run
+Clone your repo onto the VM, create your `.env` file with your Gemini API key, and run:
+```bash
+git clone [YOUR_GITHUB_REPO_URL]
+cd reddit-trendy-db
+nano .env  # Paste your keys here
+sudo docker-compose up --build -d
+```
