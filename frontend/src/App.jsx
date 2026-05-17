@@ -45,7 +45,10 @@ function App() {
             <Activity size={32} style={{ display: 'inline', marginRight: '10px', color: '#8a2be2' }} />
             Reddit Trendy DB
           </h1>
-          <PipelineTrigger onTriggerComplete={fetchData} />
+          <PipelineTrigger 
+            onTriggerStart={() => setLoading(true)} 
+            onTriggerComplete={fetchData} 
+          />
         </header>
         
         <div className="glass-panel">

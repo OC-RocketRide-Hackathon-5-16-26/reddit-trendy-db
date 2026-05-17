@@ -1,7 +1,8 @@
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
 export default function YahooSidebar({ data, loading }) {
-  if (loading) {
+  // If loading and no data yet, show loading message
+  if (loading && (!data || data.length === 0)) {
     return <div className="text-slate-400 text-center py-4">Fetching latest market data...</div>
   }
 

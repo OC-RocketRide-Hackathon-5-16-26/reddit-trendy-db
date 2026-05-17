@@ -32,6 +32,35 @@
   transform: translateY(0);
 }
 
+.loading-blur {
+  filter: blur(4px);
+  pointer-events: none;
+  opacity: 0.7;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.loading-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-color), var(--success));
+  animation: loadingBar 1.5s infinite linear;
+  transform: translateX(-100%);
+}
+
+@keyframes loadingBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+
 
 :root {
   --bg-dark: #0a0a0f;
@@ -197,6 +226,11 @@ body {
   border-bottom: none;
 }
 
+.markdown-body ul {
+  list-style-type: none;
+  padding-left: 1rem;
+}
+
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;
@@ -226,6 +260,16 @@ body {
   border-radius: 0 8px 8px 0;
   color: var(--text-secondary);
 }
+
+.markdown-body li em,
+.sentiment-item em {
+  color: #808080; /* Darker grey */
+  font-size: 0.9em; /* Lower text */
+  font-style: italic;
+  margin-left: 0.25rem;
+}
+
+
 
 /* Yahoo Sidebar Styles */
 .ticker-list {

@@ -1,5 +1,5 @@
 import ReactMarkdown from 'react-markdown'
-import { FileText } from 'lucide-react'
+import { FileText, TrendingUp, TrendingDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 function AnimatedSection({ children }) {
@@ -35,7 +35,8 @@ function AnimatedSection({ children }) {
 }
 
 export default function ReportViewer({ content, loading }) {
-  if (loading) {
+  // If loading and no content yet, show initial loading state
+  if (loading && !content) {
     return <div style={{ opacity: 0.5 }}>Loading synthesized brief...</div>
   }
 
@@ -52,22 +53,99 @@ export default function ReportViewer({ content, loading }) {
   // Split by "## " at the start of a line
   const chunks = content.split(/^## /m);
 
+  const renderItem = (text, rest, type) => {
+    const Icon = type === 'positive' ? TrendingUp : TrendingDown;
+    const colorClass = type === 'positive' ? 'change-positive' : 'change-negative';
+    return (
+      <div className="sentiment-item flex items-center gap-2 my-2 text-[0.95rem]">
+        <Icon className={`${colorClass} flex-shrink-0`} size={16} />
+        <span>
+          {text}
+          {rest}
+        </span>
+      </div>
+    )
+  };
+
+  const checkSentiment = (children) => {
+    if (!children) return null;
+    const firstChild = children[0];
+    
+    // Case 1: First child is a string
+    if (typeof firstChild === 'string') {
+      const text = firstChild.trim();
+      
+      if (text.startsWith('[POSITIVE]')) {
+        return renderItem(text.slice(10), children.slice(1), 'positive');
+      }
+      if (text.startsWith('[NEGATIVE]')) {
+        return renderItem(text.slice(10), children.slice(1), 'negative');
+      }
+    }
+    
+    // Case 2: First child is a React element (like a <p> tag inside an <li>)
+    if (firstChild && typeof firstChild === 'object' && firstChild.props) {
+      const pChildren = firstChild.props.children;
+      if (Array.isArray(pChildren) && typeof pChildren[0] === 'string') {
+        const text = pChildren[0].trim();
+        
+        if (text.startsWith('[POSITIVE]')) {
+          return renderItem(text.slice(10), pChildren.slice(1), 'positive');
+        }
+        if (text.startsWith('[NEGATIVE]')) {
+          return renderItem(text.slice(10), pChildren.slice(1), 'negative');
+        }
+      } else if (typeof pChildren === 'string') {
+        const text = pChildren.trim();
+        
+        if (text.startsWith('[POSITIVE]')) {
+          return renderItem(text.slice(10), null, 'positive');
+        }
+        if (text.startsWith('[NEGATIVE]')) {
+          return renderItem(text.slice(10), null, 'negative');
+        }
+      }
+    }
+    
+    return null;
+  };
+
+  // Custom renderer to replace sentiment markers with Lucide icons
+  const markdownComponents = {
+    p: ({ children }) => {
+      const result = checkSentiment(children);
+      if (result) return result;
+      return <p className="my-2">{children}</p>;
+    },
+    li: ({ children }) => {
+      const result = checkSentiment(children);
+      if (result) return result;
+      return <li className="my-2">{children}</li>;
+    }
+  };
+
   return (
-    <div className="markdown-body">
-      {chunks.map((chunk, index) => {
-        if (!chunk.trim()) return null;
-        
-        // If it's the first chunk and doesn't look like it had a header,
-        // it might be the top title or intro.
-        const isFirst = index === 0;
-        const markdownContent = isFirst ? chunk : `## ${chunk}`;
-        
-        return (
-          <AnimatedSection key={index}>
-            <ReactMarkdown>{markdownContent}</ReactMarkdown>
-          </AnimatedSection>
-        )
-      })}
+    <div className="loading-container">
+      {/* Sharp loading bar at the top */}
+      {loading && <div className="loading-bar"></div>}
+      
+      {/* Blurred content during loading */}
+      <div className={`markdown-body ${loading ? 'loading-blur' : ''}`}>
+        {chunks.map((chunk, index) => {
+          if (!chunk.trim()) return null;
+          
+          const isFirst = index === 0;
+          const markdownContent = isFirst ? chunk : `## ${chunk}`;
+          
+          return (
+            <AnimatedSection key={index}>
+              <ReactMarkdown components={markdownComponents}>
+                {markdownContent}
+              </ReactMarkdown>
+            </AnimatedSection>
+          )
+        })}
+      </div>
     </div>
   )
 }

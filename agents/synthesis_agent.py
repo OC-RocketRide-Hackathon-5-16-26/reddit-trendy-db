@@ -20,9 +20,43 @@ def load_yahoo_data():
         return []
 
 def query_chroma_for_trends():
+    # Try to read local file first to preserve authors and full posts
+    try:
+        file_path = "incoming_data/reddit_data.txt"
+        if os.path.exists(file_path):
+            print(f"Reading local backup from {file_path} to preserve authors...")
+            with open(file_path, "r") as f:
+                content = f.read()
+            
+            posts = content.split("=== POST START ===\n")
+            parsed_posts = []
+            for post in posts:
+                if not post.strip(): continue
+                
+                import re
+                author_match = re.search(r"Author: u/(.*)\n", post)
+                title_match = re.search(r"Title: (.*)\n", post)
+                body_match = re.search(r"Body:\n([\s\S]*)=== POST END ===", post)
+                
+                author = author_match.group(1) if author_match else "anonymous"
+                title = title_match.group(1) if title_match else ""
+                body = body_match.group(1).strip() if body_match else ""
+                
+                parsed_posts.append({
+                    "author": author,
+                    "text": body,
+                    "title": title
+                })
+            
+            print(f"Parsed {len(parsed_posts)} posts from local file.")
+            return parsed_posts
+    except Exception as e:
+        print(f"Error reading local file: {e}")
+        
+    # Fallback to Chroma if file fails
     try:
         import chromadb
-        print("Querying Chroma on port 8330...")
+        print("Falling back to Chroma on port 8330...")
         client = chromadb.HttpClient(host='localhost', port=8330)
         col = client.get_collection('ROCKETRIDE')
         results = col.get(limit=50)
@@ -30,11 +64,11 @@ def query_chroma_for_trends():
         documents = results.get("documents", [])
         print(f"Found {len(documents)} documents in Chroma.")
         
-        # Wrap the strings in a dict with 'text' so the rest of the code works
-        return [{"text": doc} for doc in documents]
+        return [{"text": doc, "author": "anonymous"} for doc in documents]
     except Exception as e:
         print(f"Error querying Chroma: {e}")
         return []
+
 
 def verify_quotes(report_content, raw_documents):
     """
@@ -156,8 +190,18 @@ def synthesize_brief(reddit_data, general_yahoo_data):
     
     **Section 3: Representative Quotes**
     - Extract a maximum of 10 compelling, direct quotes from the Reddit posts related to the stocks above or general market sentiment.
-    - **Format**: Include the author in the format: `- u/author: "Quote text"`. If you cannot find the author's name in the text, use `- u/anonymous: "Quote text"`.
-    - **CRITICAL**: These quotes MUST be exact matches from the 'Raw Reddit Posts Data' provided. Do NOT paraphrase, summarize, or create quotes.
+    - **Format**: Analyze the sentiment of the quote. If positive, start the line with `[POSITIVE]`. If negative, start the line with `[NEGATIVE]`.
+    - Full Format: `[POSITIVE] u/username: "Quote text" *(Stock: TICKER)*` or `[NEGATIVE] u/username: "Quote text" *(Stock: TICKER)*`
+    - **Example Positive**: `[POSITIVE] u/IamNotaPro870: "feels crazy to buy stocks that are over 4x higher" *(Stock: SPY)*`
+    - **CRITICAL**: You MUST include the `*(Stock: TICKER)*` context at the end of EVERY quote. If the quote is about general market sentiment and not a specific stock, use `*(Stock: General)*`. Do NOT omit this.
+    - **CRITICAL**: These quotes MUST be exact matches from the 'Raw Reddit Posts Data' provided. Do NOT paraphrase, summarize, or create quotes. Do NOT use generic names like 'Reditor' or 'anonymous' if the author name is present in the data.
+
+
+
+
+
+
+
     
     CRITICAL INSTRUCTIONS:
     - Do NOT include anything else! No general market tables, no separate analysis sections. Just these 3 sections.
